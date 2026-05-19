@@ -1,0 +1,7 @@
+model:
+  model_id: "runwayml/stable-diffusion-v1-5"
+  device: "cpu"   # 没GPU就写cpu
+
+inference:
+  steps: 50
+  guidance_scale: 7.5

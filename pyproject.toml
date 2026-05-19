@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "multimodal-engine"
+version = "0.1.0"
+description = "AI multimodal engine"
+authors = [{name = "Your Name"}]
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+dependencies = [
+    "diffusers>=0.20.0",
+    "torch>=2.0.0",
+    "transformers>=4.30.0",
+    "safetensors>=0.3.0",
+]
