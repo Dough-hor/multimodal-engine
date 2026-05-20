@@ -5,3 +5,7 @@ model:
 inference:
   steps: 50
   guidance_scale: 7.5
+  negative_prompt: "blurry, ugly, lowres" # 默认反向提示词
+  width: 512
+  height: 512
+  seed: 42  # 固定种子，可注释掉或设为 null

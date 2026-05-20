@@ -37,6 +37,11 @@ class TextToImage:
         self.infer_cfg = config.get('inference', {})
         self.default_steps = self.infer_cfg.get('steps', 50)
         self.default_cfg_scale = self.infer_cfg.get('guidance_scale', 7.5)
+        # 读取新增的推理参数
+        self.default_negative_prompt = self.infer_cfg.get('negative_prompt', None)
+        self.default_width = self.infer_cfg.get('width', 512)
+        self.default_height = self.infer_cfg.get('height', 512)
+        self.default_seed = self.infer_cfg.get('seed', None)   # 如果 YAML 中没有 seed 则为 None
 
         logger.info(f"加载模型中... (设备: {self.device})")
         try:
@@ -51,16 +56,30 @@ class TextToImage:
         # 如果显存不够，取消下面一行的注释
         # self.pipe.enable_attention_slicing()
 
-    def generate(self, prompt: str, steps=None, cfg_scale=None):
+    def generate(self, prompt: str, steps=None, cfg_scale=None,
+                negative_prompt=None, width=None, height=None, seed=None):
+        # 使用默认值填充未提供的参数
         steps = steps if steps is not None else self.default_steps
         cfg_scale = cfg_scale if cfg_scale is not None else self.default_cfg_scale
+        negative_prompt = negative_prompt if negative_prompt is not None else self.default_negative_prompt
+        width = width if width is not None else self.default_width
+        height = height if height is not None else self.default_height
+        seed = seed if seed is not None else self.default_seed
 
+        # 如果 seed 不为 None，创建 Generator
+        generator = None
+        if seed is not None:
+            generator = torch.Generator(device=self.device).manual_seed(seed)
         logger.info(f"生成中: {prompt} (steps={steps}, guidance_scale={cfg_scale})")
         try:
             image = self.pipe(
-                prompt,
+                prompt=prompt,
+                negative_prompt=negative_prompt,
                 num_inference_steps=steps,
-                guidance_scale=cfg_scale
+                guidance_scale=cfg_scale,
+                width=width,
+                height=height,
+                generator=generator
             ).images[0]
         except Exception as e:
             logger.error(f"错误：图片生成失败 - {e}")

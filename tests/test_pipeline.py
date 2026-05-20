@@ -1,5 +1,6 @@
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+os.environ.setdefault("USERNAME", "default_user")
 import torch
 import pytest
 from unittest.mock import patch, MagicMock
