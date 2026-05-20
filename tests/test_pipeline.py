@@ -13,6 +13,10 @@ model:
 inference:
   steps: 30
   guidance_scale: 8.0
+  negative_prompt: "blurry, ugly, lowres, bad anatomy"
+  width: 512
+  height: 512
+  seed: 42
 """
 
 @pytest.fixture
@@ -42,6 +46,10 @@ def test_config_loading(temp_config_file):
       assert t2i.device == "cpu"
       assert t2i.default_steps == 30
       assert t2i.default_cfg_scale == 8.0
+      assert t2i.default_negative_prompt == "blurry, ugly, lowres, bad anatomy"
+      assert t2i.default_width == 512
+      assert t2i.default_height == 512
+      assert t2i.default_seed == 42
 
 
 def test_missing_config():

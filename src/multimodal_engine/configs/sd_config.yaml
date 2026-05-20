@@ -1,6 +1,6 @@
 model:
   model_id: "runwayml/stable-diffusion-v1-5"
-  device: "GPU"   # 没GPU就写cpu
+  device: "cuda"
 
 inference:
   steps: 50
