@@ -1,9 +1,15 @@
 import os
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+import time
+from pathlib import Path
+
+OUTPUT_DIR = Path("outputs")
+OUTPUT_DIR.mkdir(exist_ok=True)
 import gradio as gr
 from multimodal_engine.image_gen import generate
 
 def gen_image(prompt, negative_prompt, steps, cfg_scale, seed):
+    start = time.time()
     # 把 Gradio 传过来的参数转成 generate() 需要的格式
     seed = int(seed) if seed else None
     image = generate(
@@ -13,7 +19,14 @@ def gen_image(prompt, negative_prompt, steps, cfg_scale, seed):
         cfg_scale=cfg_scale,
         seed=seed
     )
-    return image
+    elapsed = time.time() - start
+    
+    # 保存到 outputs/
+    filename = f"{int(time.time())}.png"
+    save_path = OUTPUT_DIR / filename
+    image.save(str(save_path))
+    
+    return image, f"生成完成 | 耗时 {elapsed:.1f}s | 已保存 {filename}"
 
 # 定义界面
 with gr.Blocks(title="AI 文生图引擎") as demo:
@@ -29,7 +42,13 @@ with gr.Blocks(title="AI 文生图引擎") as demo:
             btn = gr.Button("生成图片", variant="primary")
         with gr.Column():
             output = gr.Image(label="生成结果", type="pil")
+            status = gr.Textbox(label="状态信息", interactive=False)
+            
     
-    btn.click(fn=gen_image, inputs=[prompt, negative, steps, cfg, seed], outputs=output)
+    btn.click(
+        fn=gen_image,
+        inputs=[prompt, negative, steps, cfg, seed],
+        outputs=[output, status]
+    )
 
 demo.launch(share=False)
