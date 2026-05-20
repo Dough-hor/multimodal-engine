@@ -26,7 +26,7 @@ def gen_image(prompt, negative_prompt, steps, cfg_scale, seed):
     save_path = OUTPUT_DIR / filename
     image.save(str(save_path))
     
-    return image, f"生成完成 | 耗时 {elapsed:.1f}s | 已保存 {filename}"
+    return [image], f"生成完成 | 耗时 {elapsed:.1f}s | 已保存 {filename}"
 
 # 定义界面
 with gr.Blocks(title="AI 文生图引擎") as demo:
@@ -41,7 +41,7 @@ with gr.Blocks(title="AI 文生图引擎") as demo:
             seed = gr.Number(value=42, label="随机种子", precision=0)
             btn = gr.Button("生成图片", variant="primary")
         with gr.Column():
-            output = gr.Image(label="生成结果", type="pil")
+            output = gr.Gallery(label="生成结果")
             status = gr.Textbox(label="状态信息", interactive=False)
             
     
