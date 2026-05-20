@@ -1,6 +1,9 @@
 __pycache__/
 *.pyc
+*.pyo
 *.png
 *.jpg
+*.jpeg
 *.egg-info/
 .venv/
+.env

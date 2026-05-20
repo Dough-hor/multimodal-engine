@@ -11,10 +11,3 @@ dependencies = []
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-dependencies = [
-    "diffusers>=0.20.0",
-    "torch>=2.0.0",
-    "transformers>=4.30.0",
-    "safetensors>=0.3.0",
-]
