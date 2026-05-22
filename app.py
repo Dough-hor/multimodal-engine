@@ -5,12 +5,15 @@ import time
 from pathlib import Path
 import gradio as gr
 from multimodal_engine.image_gen import generate, generate_from_image
+from multimodal_engine.style_transfer.transfer import StyleTransfer
+from PIL import Image
+import torchvision.transforms as T
 
 OUTPUT_DIR = Path("outputs")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 
-# ==================== 文生图页面 ====================
+# 文生图页面
 
 def gen_text2img(prompt, negative_prompt, steps, cfg_scale, seed):
     start = time.time()
@@ -26,7 +29,7 @@ def gen_text2img(prompt, negative_prompt, steps, cfg_scale, seed):
     return [image], f"生成完成 | 耗时 {elapsed:.1f}s | 已保存 {filename}"
 
 
-# ==================== 图生图页面 ====================
+# 图生图页面
 
 def gen_img2img(input_image, prompt, negative_prompt, strength, steps, cfg_scale, seed):
     if input_image is None:
@@ -43,8 +46,49 @@ def gen_img2img(input_image, prompt, negative_prompt, strength, steps, cfg_scale
     image.save(str(save_path))
     return [image], f"生成完成 | 耗时 {elapsed:.1f}s | 已保存 {filename}"
 
+# 风格迁移页面
 
-# ==================== 界面 ====================
+# 风格迁移实例（避免重复加载 VGG）
+_styler = None
+
+def get_styler():                                         
+    global _styler
+    if _styler is None:
+        _styler = StyleTransfer()   
+    return _styler
+
+def gen_style_transfer(content_img, style_img, steps):
+    if content_img is None or style_img is None:
+        return [], "请上传内容图和风格图"
+    # PIL → tensor
+    to_tensor = T.ToTensor()
+    content_tensor = to_tensor(content_img).unsqueeze(0)
+    style_tensor = to_tensor(style_img).unsqueeze(0)
+    
+    try:
+        styler = get_styler()                                           # <-- 修改：使用单例
+        result_tensor = styler.transfer(
+            content_tensor, style_tensor,
+            num_steps=int(steps)                                        # <-- 修改：确保 int
+        )
+    except Exception as e:
+        return [], f"生成失败: {str(e)}"
+
+
+    # tensor → PIL
+    to_pil = T.ToPILImage()
+    
+    # 如果 result_tensor 有 batch 维，则去掉
+    if result_tensor.dim() == 4 and result_tensor.size(0) == 1:
+        result_tensor = result_tensor.squeeze(0)
+    result_pil = to_pil(result_tensor)
+    
+    filename = f"style_{int(time.time())}.png"
+    save_path = OUTPUT_DIR / filename
+    result_pil.save(str(save_path))
+    return [result_pil], f"完成 | 已保存 {filename}"
+
+# 界面
 
 with gr.Blocks(title="AI 多模态创作引擎") as demo:
     gr.Markdown("# AI 多模态创作引擎")
@@ -87,4 +131,23 @@ with gr.Blocks(title="AI 多模态创作引擎") as demo:
             outputs=[output_i2i, status_i2i]
         )
 
+    with gr.Tab("风格迁移"):
+        with gr.Row():
+            with gr.Column():
+                img_content = gr.Image(label="内容图", type="pil")
+                img_style = gr.Image(label="风格图", type="pil")
+                steps_st = gr.Slider(50, 500, value=300, label="优化步数")
+                btn_st = gr.Button("开始风格迁移", variant="primary")
+            with gr.Column():
+                output_st = gr.Gallery(label="生成结果")
+                status_st = gr.Textbox(label="状态", interactive=False)
+        btn_st.click(
+            fn=gen_style_transfer,
+            inputs=[img_content, img_style, steps_st],
+            outputs=[output_st, status_st]
+        )
+
+
 demo.launch(share=False)
+
+

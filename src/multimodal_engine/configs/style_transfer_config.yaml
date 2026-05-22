@@ -1,0 +1,10 @@
+model:
+  vgg_layers:
+    content: ["conv4_2"]
+    style: ["conv1_1", "conv2_1", "conv3_1", "conv4_1", "conv5_1"]
+
+optimization:
+  steps: 300
+  content_weight: 1.0
+  style_weight: 1e6
+  tv_weight: 0
