@@ -46,7 +46,7 @@ class StyleTransfer:
         opt = config.get('optimization', {})
         self.steps = opt.get('steps', 300)
         self.content_weight = opt.get('content_weight', 1.0)
-        self.style_weight = opt.get('style_weight', 1e6)
+        self.style_weight = float(opt.get('style_weight', 1e6))
         self.tv_weight = opt.get('tv_weight', 0.0)
 
         self.extractor = VGGFeatureExtractor(self.content_layers, self.style_layers)
