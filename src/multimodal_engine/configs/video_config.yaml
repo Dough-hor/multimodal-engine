@@ -1,0 +1,11 @@
+model:
+  model_id: "stabilityai/stable-video-diffusion-img2vid"
+  device: "cpu"
+
+inference:
+  frames: 14
+  fps: 7
+  decode_chunk_size: 8
+  motion_bucket_id: 127
+  noise_aug_strength: 0.1
+  seed: 42
