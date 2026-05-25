@@ -63,7 +63,10 @@ class StyleTransfer:
         tv_weight = tv_weight if tv_weight is not None else self.tv_weight
 
         # 设备
-        device=next(self.extractor.parameters()).device
+        try:
+            device=next(self.extractor.parameters()).device
+        except StopIteration:
+            device=torch.device("cpu")
         content_img=content_img.to(device)
         style_img=style_img.to(device)
 

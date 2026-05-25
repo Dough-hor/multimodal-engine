@@ -37,12 +37,13 @@ def test_transfer_smoke(tmp_path):
         style = torch.randn(1, 3, 64, 64)
 
         def mock_forward(x):
+            base = x.mean(dim=1, keepdim=True)
             out = {
-                "conv4_2": torch.randn(1, 128, 16, 16),
+                "conv4_2": torch.nn.functional.adaptive_avg_pool2d(base, (16, 16)).repeat(1, 128, 1, 1),
             }
             style_out = {
-                "conv1_1": torch.randn(1, 64, 64, 64),
-                "conv2_1": torch.randn(1, 128, 32, 32),
+                "conv1_1": torch.nn.functional.adaptive_avg_pool2d(base, (64, 64)).repeat(1, 64, 1, 1),
+                "conv2_1": torch.nn.functional.adaptive_avg_pool2d(base, (32, 32)).repeat(1, 128, 1, 1),
             }
             return out, style_out
 
