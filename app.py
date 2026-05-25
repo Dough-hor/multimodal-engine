@@ -6,6 +6,8 @@ from pathlib import Path
 import gradio as gr
 from multimodal_engine.image_gen import generate, generate_from_image
 from multimodal_engine.style_transfer.transfer import StyleTransfer
+from multimodal_engine.video_gen import generate_video
+from diffusers.utils import export_to_video
 from PIL import Image
 import torchvision.transforms as T
 
@@ -88,6 +90,29 @@ def gen_style_transfer(content_img, style_img, steps):
     result_pil.save(str(save_path))
     return [result_pil], f"完成 | 已保存 {filename}"
 
+# 图生视频页面
+def gen_img2video(image, frames, fps, seed):
+        if image is None:
+            return None
+        start=time.time()
+        seed=int(seed) if seed else None
+        try:
+            frams_output=generate_video(
+                image=image,
+                frames=int(frames),
+                fps=int(fps),
+                seed=seed
+            )
+        except Exception as e:
+            return None, f"视频生成失败: {str(e)}"
+        elapsed = time.time() - start
+        filename = f"video_{int(time.time())}.png"
+        save_path = OUTPUT_DIR / filename
+        image.save(str(save_path))
+
+        export_to_video(frames_output, str(save_path), fps=int(fps))
+        return str(save_path), f"生成完成 | 耗时 {elapsed:.1f}s | 已保存 {filename}"   
+
 # 界面
 
 with gr.Blocks(title="AI 多模态创作引擎") as demo:
@@ -147,6 +172,22 @@ with gr.Blocks(title="AI 多模态创作引擎") as demo:
             outputs=[output_st, status_st]
         )
 
+    with gr.Tab("图生视频"):
+        with gr.Row():
+            with gr.Column():
+                img_video = gr.Image(label="输入图片", type="pil")
+                frames_video = gr.Slider(8, 30, value=14, step=1, label="帧数")
+                fps_video = gr.Slider(4, 30, value=7, step=1, label="帧率 (fps)")
+                seed_video = gr.Number(value=42, label="随机种子", precision=0)
+                btn_video = gr.Button("生成视频", variant="primary")
+            with gr.Column():
+                output_video = gr.Video(label="生成的视频")
+                status_video = gr.Textbox(label="状态", interactive=False)
+        btn_video.click(
+            fn=gen_img2video,
+            inputs=[img_video, frames_video, fps_video, seed_video],
+            outputs=[output_video, status_video]
+        )
 
 demo.launch(share=False)
 
