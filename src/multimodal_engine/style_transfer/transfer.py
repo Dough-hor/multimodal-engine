@@ -119,21 +119,21 @@ class StyleTransfer:
             for name,feat in style_feats.items():
                 target=style_targets[name]
                 gram=gram_matrix(feat)
-                style_loss+=torch.nn.functional.mse_loss(gram,target) 
+                style_loss+=torch.nn.functional.mse_loss(gram,target)
 
             # 总变差损失
             tv_loss=0
             if tv_weight>0:
-                tv_loss=torch.mean(torch.abs(gen[:, :, 1:, :] - gen[:, :, :-1, :]))+torch.mean(torch.abs(gen[:, :, :, 1:] - gen[:, :, :, :-1]))      
+                tv_loss=torch.mean(torch.abs(gen[:, :, 1:, :] - gen[:, :, :-1, :]))+torch.mean(torch.abs(gen[:, :, :, 1:] - gen[:, :, :, :-1]))
 
             # 总loss
             total_loss= content_weight * content_loss + style_weight * style_loss + tv_weight * tv_loss
             total_loss.backward()
-            return total_loss # 返回损失值
-            
-            optimizer.step(closure)
+            return total_loss
+
+        optimizer.step(closure)
 
         # 返回生成的图像（逆归一化）
         result=deprocess(gen.detach().cpu())
-        return result.squeeze(0) # 去掉batch维度
+        return result.squeeze(0)
         
