@@ -97,7 +97,7 @@ def gen_img2video(image, frames, fps, seed):
         start=time.time()
         seed=int(seed) if seed else None
         try:
-            frams_output=generate_video(
+            frames_output=generate_video(
                 image=image,
                 frames=int(frames),
                 fps=int(fps),
@@ -108,8 +108,6 @@ def gen_img2video(image, frames, fps, seed):
         elapsed = time.time() - start
         filename = f"video_{int(time.time())}.png"
         save_path = OUTPUT_DIR / filename
-        image.save(str(save_path))
-
         export_to_video(frames_output, str(save_path), fps=int(fps))
         return str(save_path), f"生成完成 | 耗时 {elapsed:.1f}s | 已保存 {filename}"   
 
