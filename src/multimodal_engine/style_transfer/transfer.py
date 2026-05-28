@@ -27,7 +27,7 @@ def gram_matrix(tensor):
         tensor = tensor.unsqueeze(0)
     b, c, h, w = tensor.size()
     features = tensor.view(b,c,-1)
-    gram = features @ features.transpose(1,2)
+    gram = features @ features.transpose(1,2) # @表示矩阵相乘
     return gram / (c * h * w)
 
 class StyleTransfer:
@@ -51,6 +51,8 @@ class StyleTransfer:
 
         self.extractor = VGGFeatureExtractor(self.content_layers, self.style_layers)
         self.extractor.eval()
+
+        # 冻结参数
         for param in self.extractor.parameters():
             param.requires_grad = False
 
@@ -64,9 +66,11 @@ class StyleTransfer:
 
         # 设备
         try:
-            device=next(self.extractor.parameters()).device
+            device=next(self.extractor.parameters()).device # next表示从迭代器里拿出第一个张量
         except StopIteration:
             device=torch.device("cpu")
+
+        # 只有同时在GPU或CPU上才能完成后续操作，这里是保证都在同一个设备上
         content_img=content_img.to(device)
         style_img=style_img.to(device)
 
@@ -85,7 +89,7 @@ class StyleTransfer:
         style_norm = preprocess(style_img)
 
         # 提取风格图的目标 Gram 矩阵
-        with torch.no_grad():
+        with torch.no_grad(): # with下面缩进的代码都表示在with的条件下运行，这里是都在不返回梯度的条件下运行
             _,style_feats=self.extractor(style_norm)
             style_targets={}
             for name,feat in style_feats.items():
@@ -99,7 +103,7 @@ class StyleTransfer:
             for name, feat in content_feats.items():
                 content_targets[name] = feat.detach()
 
-        # 初始化生成图（内容图的副本，开启梯度
+        # 初始化生成图（内容图的副本，开启梯度）
         gen=content_norm.clone().requires_grad_(True)
 
         # 优化器（L-BFGS）

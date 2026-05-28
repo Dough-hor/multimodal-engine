@@ -1,6 +1,7 @@
 import os
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 
+import torch
 import time
 from pathlib import Path
 import gradio as gr
@@ -10,6 +11,8 @@ from multimodal_engine.video_gen import generate_video
 from diffusers.utils import export_to_video
 from PIL import Image
 import torchvision.transforms as T
+from multimodal_engine.style_transfer import AdaINStyleTransfer, cycleGAN
+
 
 OUTPUT_DIR = Path("outputs")
 OUTPUT_DIR.mkdir(exist_ok=True)
@@ -50,7 +53,8 @@ def gen_img2img(input_image, prompt, negative_prompt, strength, steps, cfg_scale
 
 # 风格迁移页面
 
-# 风格迁移实例（避免重复加载 VGG）
+# 单例的控制权应该在应用层，不能写在每个文件的init里，因为有些时候需要两个不同参数的实例，但这里app只需要单例所以才这么写
+# 风格迁移实例（避免重复加载 VGG）(gatys)
 _styler = None
 
 def get_styler():                                         
@@ -59,6 +63,29 @@ def get_styler():
         _styler = StyleTransfer()   
     return _styler
 
+# adain单例
+_adain=None
+
+def get_adain():
+    global _adain
+    if _adain is None:
+        _adain=AdaINStyleTransfer()
+        _adain.eval()
+    return _adain
+
+# cyclegan单例
+_cyclegan=None
+
+def get_cyclegan(checkpoint_path):
+    global _cyclegan
+    if _cyclegan is None:
+        _cyclegan=cycleGAN()
+        if checkpoint_path and os.path.exists(checkpoint_path):
+            _cyclegan.load_state_dict(torch.load(checkpoint_path,map_location="cpu"))
+        _cyclegan.eval()
+    return _cyclegan
+
+# gatys风格迁移推理方法
 def gen_style_transfer(content_img, style_img, steps):
     if content_img is None or style_img is None:
         return [], "请上传内容图和风格图"
@@ -68,10 +95,10 @@ def gen_style_transfer(content_img, style_img, steps):
     style_tensor = to_tensor(style_img).unsqueeze(0)
     
     try:
-        styler = get_styler()                                           # <-- 修改：使用单例
+        styler = get_styler()                                           
         result_tensor = styler.transfer(
             content_tensor, style_tensor,
-            num_steps=int(steps)                                        # <-- 修改：确保 int
+            num_steps=int(steps)                                       
         )
     except Exception as e:
         return [], f"生成失败: {str(e)}"
@@ -86,6 +113,63 @@ def gen_style_transfer(content_img, style_img, steps):
     result_pil = to_pil(result_tensor)
     
     filename = f"style_{int(time.time())}.png"
+    save_path = OUTPUT_DIR / filename
+    result_pil.save(str(save_path))
+    return [result_pil], f"完成 | 已保存 {filename}"
+
+# adain风格迁移推理方法
+def gen_adain_transfer(content_img, style_img,alpha=0.8):
+    if content_img is None or style_img is None:
+        return [], "请上传内容图和风格图"
+    # PIL → tensor
+    to_tensor = T.ToTensor()
+    content_tensor = to_tensor(content_img).unsqueeze(0)
+    style_tensor = to_tensor(style_img).unsqueeze(0)
+    
+    try:
+        model = get_adain()                                           
+        result_tensor = model(content_tensor,style_tensor,alpha=alpha)
+    except Exception as e:
+        return [], f"生成失败: {str(e)}"
+
+
+    # tensor → PIL
+    to_pil = T.ToPILImage()
+    
+    # 如果 result_tensor 有 batch 维，则去掉
+    if result_tensor.dim() == 4 and result_tensor.size(0) == 1:
+        result_tensor = result_tensor.squeeze(0)
+    result_pil = to_pil(result_tensor)
+    
+    filename = f"adain_{int(time.time())}.png"
+    save_path = OUTPUT_DIR / filename
+    result_pil.save(str(save_path))
+    return [result_pil], f"完成 | 已保存 {filename}"
+
+# cyclegan风格迁移推理方法
+def gen_cyclegan_transfer(content_img):
+    if content_img is None:
+        return [], "请上传内容图"
+    # PIL → tensor
+    to_tensor = T.ToTensor()
+    content_tensor = to_tensor(content_img).unsqueeze(0)
+    
+    try:
+        model = get_cyclegan()                                           
+        result_tensor = model(content_tensor)
+    except Exception as e:
+        return [], f"生成失败: {str(e)}"
+
+
+    # tensor → PIL
+    to_pil = T.ToPILImage()
+    
+    # 如果 result_tensor 有 batch 维，则去掉
+    if result_tensor.dim() == 4 and result_tensor.size(0) == 1:
+        result_tensor = result_tensor.squeeze(0)
+    result_pil = to_pil(result_tensor)
+    
+    filename = f"ciclegan_{int(time.time())}.png"
     save_path = OUTPUT_DIR / filename
     result_pil.save(str(save_path))
     return [result_pil], f"完成 | 已保存 {filename}"
@@ -110,6 +194,8 @@ def gen_img2video(image, frames, fps, seed):
         save_path = OUTPUT_DIR / filename
         export_to_video(frames_output, str(save_path), fps=int(fps))
         return str(save_path), f"生成完成 | 耗时 {elapsed:.1f}s | 已保存 {filename}"   
+
+
 
 # 界面
 
@@ -154,20 +240,50 @@ with gr.Blocks(title="AI 多模态创作引擎") as demo:
             outputs=[output_i2i, status_i2i]
         )
 
-    with gr.Tab("风格迁移"):
+    with gr.Tab("Gatys 风格迁移"):
         with gr.Row():
             with gr.Column():
-                img_content = gr.Image(label="内容图", type="pil")
-                img_style = gr.Image(label="风格图", type="pil")
-                steps_st = gr.Slider(50, 500, value=300, label="优化步数")
-                btn_st = gr.Button("开始风格迁移", variant="primary")
+                img_content_gatys = gr.Image(label="内容图", type="pil")
+                img_style_gatys = gr.Image(label="风格图", type="pil")
+                steps_gatys = gr.Slider(50, 500, value=300, label="优化步数")
+                btn_gatys = gr.Button("开始风格迁移", variant="primary")
             with gr.Column():
-                output_st = gr.Gallery(label="生成结果")
-                status_st = gr.Textbox(label="状态", interactive=False)
-        btn_st.click(
+                output_gatys = gr.Gallery(label="生成结果")
+                status_gatys = gr.Textbox(label="状态", interactive=False)
+        btn_gatys.click(
             fn=gen_style_transfer,
-            inputs=[img_content, img_style, steps_st],
-            outputs=[output_st, status_st]
+            inputs=[img_content_gatys, img_style_gatys, steps_gatys],
+            outputs=[output_gatys, status_gatys]
+        )
+        
+    with gr.Tab("AdaIN 风格迁移"):
+        with gr.Row():
+            with gr.Column():
+                img_content_adain = gr.Image(label="内容图", type="pil")
+                img_style_adain = gr.Image(label="风格图", type="pil")
+                alpha_adain = gr.Slider(0, 1, value=0.8, label="风格强度 (alpha)")
+                btn_adain = gr.Button("开始风格迁移", variant="primary")
+            with gr.Column():
+                output_adain = gr.Gallery(label="生成结果")
+                status_adain = gr.Textbox(label="状态", interactive=False)
+        btn_adain.click(
+            fn=gen_adain_transfer,
+            inputs=[img_content_adain, img_style_adain, alpha_adain],
+            outputs=[output_adain, status_adain]
+        )
+
+    with gr.Tab("CycleGAN 风格迁移"):
+        with gr.Row():
+            with gr.Column():
+                img_content_cycle = gr.Image(label="内容图", type="pil")
+                btn_cycle = gr.Button("开始风格迁移", variant="primary")
+            with gr.Column():
+                output_cycle = gr.Gallery(label="生成结果")
+                status_cycle = gr.Textbox(label="状态", interactive=False)
+        btn_cycle.click(
+            fn=gen_cyclegan_transfer,
+            inputs=[img_content_cycle],
+            outputs=[output_cycle, status_cycle]
         )
 
     with gr.Tab("图生视频"):

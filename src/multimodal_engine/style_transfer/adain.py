@@ -36,7 +36,6 @@ class AdaINEncoder(nn.Module):
     """用 VGG19 前几层作为编码器，提取特征
     编码阶段冻结所有参数，不参与训练
     """
-
     def __init__(self):
         super().__init__()
         vgg = models.vgg19(weights=models.VGG19_Weights.IMAGENET1K_V1).features
@@ -78,7 +77,6 @@ class AdaINStyleTransfer(nn.Module):
     训练时：前向计算 + 损失
     推理时：直接调用 forward(content, style) 得到结果图
     """
-
     def __init__(self, content_layer='relu4_1', style_layers=None):
         super().__init__()
         if style_layers is None:
@@ -99,8 +97,8 @@ class AdaINStyleTransfer(nn.Module):
         # 损失权重
         self.content_weight = 1.0
         self.style_weight = 10.0
-        self.content_layer = content_layer
-        self.style_layers = style_layers
+        self.content_layer = content_layer # 内容层只有一层
+        self.style_layers = style_layers # 风格层有多层
 
     def forward(self, content, style, alpha=1.0):
         """推理前向
