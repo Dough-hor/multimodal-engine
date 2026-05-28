@@ -22,6 +22,7 @@ class VGGFeatureExtractor(nn.Module):
         ]
 
         self.vgg_layers = nn.ModuleList([vgg[i] for i in range(len(vgg))])
+        self.vgg_layers.eval()
         self.vgg_names = vgg_names[:len(vgg)]
         self.content_layers=content_layers
         self.style_layers=style_layers
