@@ -1,11 +1,17 @@
-
 model:
-  model_id: "runwayml/stable-diffusion-v1-5"
-  device: "cpu"
+  model_id: "D:/lora/anything_v5"   # 动漫底模（AnythingV5，本地 diffusers 目录，离线加载）
+  device: "cuda"      # 原来是 cpu —— 遗留问题，有独显就 cuda，否则图生图慢到怀疑人生
+
+lora:
+  dir: "D:/lora/output"
+  weight_name: "output/yoneya_v5c-000003.safetensors"   # v5c e3（768px+dim64），2026-09-03 验收定稿
+  adapter_name: "yoneya"
+  scale: 1.0                                  # 甜点（2026-09-10 ComfyUI 顺风局复测：1.0~1.2 最好，1.5 崩）
 
 inference:
   steps: 50
   guidance_scale: 7.5
   strength: 0.8
-  negative_prompt: "blurry, ugly, lowres"
-  seed: 42
+  # 彩色修正（治 LoRA 高强度灰图）+ 脸部质量词（治小脸崩坏）
+  negative_prompt: "worst quality, low quality, normal quality, lowres, bad anatomy, bad hands, missing fingers, extra digits, text, watermark, signature, blurry, ugly, monochrome, greyscale, bad face, deformed face, distorted face"
+  seed: null   # 不固定（2026-09-10 v5c seed 42 崩脸；不固定让每次随机）

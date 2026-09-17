@@ -1,0 +1,19 @@
+model:
+  model_id: "D:/lora/anything_v5"
+  device: "cuda"
+
+controlnet:
+  model_id: "lllyasviel/control_v11p_sd15_canny"
+
+lora:
+  dir: "D:/lora/output"
+  weight_name: "output/yoneya_v5c-000003.safetensors"
+  adapter_name: "yoneya"
+  scale: 1.0                                  # 甜点（2026-09-10 ComfyUI 顺风局复测：1.0~1.2 最好，1.5 崩）
+
+inference:
+  steps: 30
+  guidance_scale: 7.5
+  controlnet_conditioning_scale: 1.0
+  negative_prompt: "worst quality, low quality, lowres, bad anatomy, bad hands, text, watermark, blurry, monochrome, greyscale, bad face, deformed face"
+  seed: null   # 不固定（2026-09-10 v5c seed 42 崩脸；不固定让每次随机）

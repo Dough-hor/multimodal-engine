@@ -59,17 +59,17 @@ class AdaINDecoder(nn.Module):
         super().__init__()
 
         self.decoder=nn.Sequential( # Sequential是顺序容器
-            nn.Conv2d(512,256,3,1,1),nn.ReLu(), #  把 512 个通道的特征图，用 3×3 卷积，变成 256 个通道，尺寸不变，conv2d只的是只在2维做卷积
+            nn.Conv2d(512,256,3,1,1),nn.ReLU(), #  把 512 个通道的特征图，用 3×3 卷积，变成 256 个通道，尺寸不变，conv2d只的是只在2维做卷积
             nn.Upsample(scale_factor=2,mode="nearest"),
-            nn.Conv2d(256,128,3,1,1),nn.ReLu(),
+            nn.Conv2d(256,128,3,1,1),nn.ReLU(),
             nn.Upsample(scale_factor=2,mode="nearest"),
-            nn.Conv2d(128,64,3,1,1),nn.ReLu(),
+            nn.Conv2d(128,64,3,1,1),nn.ReLU(),
             nn.Upsample(scale_factor=2,mode="nearest"),
-            nn.Conv2d(64,3,3,1,1),nn.ReLu(), # 第一个3代表RGB
+            nn.Conv2d(64,3,3,1,1),nn.ReLU(), # 第一个3代表RGB
         )
 
     def forward(self, x):
-        return self.decoder
+        return self.decoder(x)
 
 
 class AdaINStyleTransfer(nn.Module):

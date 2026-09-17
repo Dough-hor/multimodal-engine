@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>终极对比：自训 LoRA vs 社区金标准</title>
+<style>
+  body { font-family: "Microsoft YaHei", sans-serif; background:#1a1a1e; color:#e8e8e8; margin:0; padding:24px; }
+  h1 { font-size:22px; border-bottom:2px solid #534AB7; padding-bottom:10px; }
+  h2 { font-size:17px; color:#AFA9EC; margin-top:36px; }
+  .card { background:#242429; border-radius:10px; padding:18px; margin:14px 0; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; }
+  .cell { flex:1; min-width:180px; text-align:center; }
+  .cell img { width:100%; border-radius:6px; }
+  .cap { font-size:12px; margin-top:6px; line-height:1.5; color:#bbb; }
+  .cap b { color:#fff; }
+  .good { color:#5DCAA5; } .bad { color:#F0997B; }
+  table { border-collapse:collapse; width:100%; font-size:13px; margin:10px 0; }
+  th, td { border:1px solid #3a3a42; padding:6px 10px; text-align:left; }
+  th { background:#2e2e36; }
+  .verdict { background:#2d2430; border-left:4px solid #D4537E; padding:14px 18px; border-radius:6px; margin:18px 0; line-height:1.8; }
+  .note { font-size:13px; color:#999; line-height:1.7; }
+  .gold { border:2px solid #BA7517; }
+</style>
+</head>
+<body>
+
+<h1>终极对比：自训 LoRA vs 社区金标准（Chanter 米山舞 Style LoRA）</h1>
+
+<div class="verdict">
+<b>诊断结论（三条证据链）：</b><br>
+① LoRA 信号不弱——scale 从 0→1.5，平均像素差 34→53/255，影响强烈且单调；<br>
+② 但方向学歪了——scale 越大，色彩离米山舞参考集<b class="bad">越远</b>（hue_sim 0.367→0.137 崩落，饱和度同步走低）；<br>
+③ 金标准完全相反——同引擎同参数，内容词下 hue_sim 高达 <b class="good">0.587</b>、饱和度 0.47，方向是对的。<br>
+<b>结论：问题不在 epoch、不在采样参数、不在 LoRA 强度——在训练数据。你的 LoRA 把画面推向了一个"非米山舞"的平均风格。</b>
+</div>
+
+<h2>一、自训 v5b_e2：scale 渐变（同一张图只拧 LoRA 旋钮，seed=42）</h2>
+<div class="card">
+<div class="row">
+  <div class="cell"><img src="scale_probe/v5b_e2_scale_0.0.png"><div class="cap"><b>scale 0</b>（无LoRA）<br>hue_sim 0.367 · sat 0.364<br>基准图</div></div>
+  <div class="cell"><img src="scale_probe/v5b_e2_scale_0.5.png"><div class="cap"><b>scale 0.5</b><br>hue_sim 0.291 · sat 0.356<br>像素差 34.8</div></div>
+  <div class="cell"><img src="scale_probe/v5b_e2_scale_1.0.png"><div class="cap"><b>scale 1.0</b><br>hue_sim <span class="bad">0.161</span> · sat 0.352<br>像素差 40.1</div></div>
+  <div class="cell"><img src="scale_probe/v5b_e2_scale_1.5.png"><div class="cap"><b>scale 1.5</b><br>hue_sim <span class="bad">0.166</span> · sat <span class="bad">0.272</span><br>像素差 45.1</div></div>
+</div>
+<p class="note">注意规律：LoRA 拧得越大，色彩离参考集越远（hue_sim 崩落）、饱和度越低（发灰）。它在把画面推向一个"灰暗的非米山舞方向"。</p>
+</div>
+
+<h2>二、自训 v5c_e3（768px 新版）：同样的崩落曲线</h2>
+<div class="card">
+<div class="row">
+  <div class="cell"><img src="scale_probe/v5c_e3_scale_0.0.png"><div class="cap"><b>scale 0</b><br>hue_sim 0.367 · sat 0.364</div></div>
+  <div class="cell"><img src="scale_probe/v5c_e3_scale_0.5.png"><div class="cap"><b>scale 0.5</b><br>hue_sim 0.264 · sat 0.402</div></div>
+  <div class="cell"><img src="scale_probe/v5c_e3_scale_1.0.png"><div class="cap"><b>scale 1.0</b><br>hue_sim <span class="bad">0.189</span> · sat 0.391</div></div>
+  <div class="cell"><img src="scale_probe/v5c_e3_scale_1.5.png"><div class="cap"><b>scale 1.5</b><br>hue_sim <span class="bad">0.137</span> · sat 0.387<br>全场最差</div></div>
+</div>
+<p class="note">v5b 和 v5c 从同一底子续训出来，崩落曲线一模一样——病灶是继承的，出在共同的数据集上。</p>
+</div>
+
+<h2>三、金标准：Chanter 米山舞 LoRA（同引擎 / 同 seed / 同 prompt 逐字一致）</h2>
+<div class="card gold">
+<div class="row">
+  <div class="cell"><img src="golden_ref/r1_same_scale_0.7.png"><div class="cap"><b>r1 scale 0.7</b>（与上面完全同 prompt 同 seed）<br>hue_sim 0.344 · sat 0.415</div></div>
+  <div class="cell"><img src="golden_ref/r1_same_scale_1.0.png"><div class="cap"><b>r1 scale 1.0</b>（作者推荐档）<br>hue_sim 0.312 · sat 0.466</div></div>
+  <div class="cell"><img src="golden_ref/r2_cyber_scale_0.7.png"><div class="cap"><b>r2 赛博朋克 scale 0.7</b><br>hue_sim <span class="good">0.587</span> · sat 0.471</div></div>
+  <div class="cell"><img src="golden_ref/r2_cyber_scale_1.0.png"><div class="cap"><b>r2 赛博朋克 scale 1.0</b><br>hue_sim <span class="good">0.589</span> · sat 0.478</div></div>
+</div>
+<p class="note">这就是"别人训好的米山舞"。同一个引擎、同一块 4050、同一个 seed——差距不是硬件，不是参数，是<b>训练数据</b>。</p>
+</div>
+
+<h2>四、金标准情报卡（回炉方案的直接参考）</h2>
+<div class="card">
+<table>
+<tr><th>项目</th><th>Chanter 金标准</th><th>你的 v5 系列</th></tr>
+<tr><td>训练数据</td><td class="good">841 张原画（官方图+裁剪+视频截图，来源单一且纯）</td><td class="bad">195 张推特收集（混仿作/二创，来源混杂）</td></tr>
+<tr><td>训练底模</td><td>Anything-5RE（与你同家族）</td><td>anything-v5（同家族）</td></tr>
+<tr><td>触发词</td><td>1girl（普通词即可——风格 LoRA 挂上就带风格）</td><td>yoneya style（自定义触发词）</td></tr>
+<tr><td>推荐权重</td><td>1.0（0.5~1.4 都能出效果）</td><td>0.8 就已偏离方向</td></tr>
+<tr><td>文件规格</td><td>36MB 纯 LoRA（SD1.5）</td><td>dim64 约 300MB</td></tr>
+</table>
+<p class="note">注意金标准的反直觉之处：它不是"小而精"（58 张），而是"纯而量足"（841 张）。真正要害是<b>纯度</b>：841 张全部来自米山舞本人的作品（连裁剪图和视频截图都算，只要出自本人之手），所以量大也不会稀释风格。你的 195 张里只要混了三成仿作，就把整个数据集带偏了。</p>
+</div>
+
+<h2>五、你的判读清单（30 秒）</h2>
+<div class="card">
+<p class="note" style="font-size:14px; line-height:2;">
+1. 先看第三区金标准 r1 那两张——<b>你能不能一眼认出是米山舞？</b>（如果连金标准都认不出，说明 anything-v5 底模天花板也是瓶颈之一，回炉要连底模一起换）<br>
+2. 再对比第一、二区自训图——具体差在哪：眼型？线条锐度？色彩透明感？<br>
+3. 顺手看 r2 赛博朋克——金标准 + 内容词长什么样，这是"你的引擎理论上限"。<br>
+4. 结论决定下一步：回炉数据（按金标准思路重收集本人原作）还是连底模一起升级（Illustrious/SDXL 系）。
+</p>
+</div>
+
+<p class="note">生成口径：全部 512px / seed 42 / 30 steps / cfg 7.5 / 同负面词，2026-09-03，引擎 multimodal-engine (anything-v5 + diffusers)。<br>
+金标准权重：civitai.com/models/71979（Chanter, 米山舞 Style LoRA V2 的 2D 风格版，已剥离 text encoder 部分以兼容 diffusers）。</p>
+
+</body>
+</html>

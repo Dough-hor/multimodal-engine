@@ -1,11 +1,41 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
-*.png
-*.jpg
-*.jpeg
 *.egg-info/
 .venv/
 .env
+.pytest_cache/
 
+# Workbuddy（私人笔记/记忆，不进仓库）
+.workbuddy/
+
+# 模型权重（避免误传大文件）
+*.pt
+*.pth
+*.safetensors
+*.ckpt
+*.bin
+srcnn_t91.pth
+
+# 临时日志
+matrix_run.log
+
+# 训练数据（BSD100 等大数据集，仓库外下载）
+data/
+
+# 作品集 PDF（21MB，分开部署/网盘，不入代码仓）
+outputs/portfolio_*.pdf
+
+data/
+*.zip
+*.tar.gz
+*.safetensors
+*.ckpt
+*.pth
+*.pt
+*.bin
+*.onnx
+__pycache__/
+.pytest_cache/
 .workbuddy/

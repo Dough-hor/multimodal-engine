@@ -1,6 +1,6 @@
 model:
   model_id: "stabilityai/stable-video-diffusion-img2vid"
-  device: "cpu"
+  device: "cuda"
 
 inference:
   frames: 14
@@ -8,4 +8,4 @@ inference:
   decode_chunk_size: 8
   motion_bucket_id: 127
   noise_aug_strength: 0.1
-  seed: 42
+  seed: null   # 不固定（2026-09-10 v5c seed 42 崩脸；不固定让每次随机）

@@ -141,6 +141,6 @@ class StyleTransfer:
         optimizer.step(closure)
 
         # 返回生成的图像（逆归一化）
-        result=deprocess(gen.detach().cpu())
+        result = deprocess(gen.detach()).cpu()
         return result.squeeze(0)
         

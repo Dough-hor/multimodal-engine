@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实习冲刺计划 · 2026.8.29 - 10月</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --ink:#1c2430; --sub:#5a6a7a;
+    --line:#e3e8ee; --blue:#185FA5; --blue-l:#E6F1FB;
+    --red:#A32D2D; --red-l:#FCEBEB; --amber:#854F0B; --amber-l:#FAEEDA;
+    --teal:#0F6E56; --teal-l:#E1F5EE; --purple:#534AB7; --purple-l:#EEEDFE;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--ink); line-height:1.65; padding:24px 16px;}
+  .wrap{max-width:860px; margin:0 auto;}
+  h1{font-size:22px; margin-bottom:4px;}
+  .meta{color:var(--sub); font-size:13px; margin-bottom:20px;}
+  .goal{background:var(--blue-l); border-left:4px solid var(--blue); border-radius:8px; padding:14px 16px; margin-bottom:24px; font-size:14px;}
+  .goal b{color:var(--blue);}
+  h2{font-size:17px; margin:28px 0 12px; padding-left:10px; border-left:4px solid var(--blue);}
+  h2 .tag{font-size:12px; font-weight:normal; color:var(--sub); margin-left:8px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px;}
+  table{width:100%; border-collapse:collapse; font-size:13px; background:var(--card); border-radius:12px; overflow:hidden;}
+  th{background:#eef2f6; text-align:left; padding:8px 10px; font-weight:600; font-size:12px;}
+  td{padding:8px 10px; border-top:1px solid var(--line); vertical-align:top;}
+  td.day{white-space:nowrap; font-weight:600; width:120px;}
+  td.algo{color:var(--sub); width:170px; font-size:12px;}
+  .pill{display:inline-block; padding:1px 8px; border-radius:99px; font-size:11px; margin-right:4px;}
+  .p-blue{background:var(--blue-l); color:var(--blue);}
+  .p-red{background:var(--red-l); color:var(--red);}
+  .p-amber{background:var(--amber-l); color:var(--amber);}
+  .p-teal{background:var(--teal-l); color:var(--teal);}
+  .p-purple{background:var(--purple-l); color:var(--purple);}
+  .box{border-radius:10px; padding:12px 14px; font-size:13px; margin-bottom:10px;}
+  .b-red{background:var(--red-l); border:1px solid #f2c9c9;}
+  .b-amber{background:var(--amber-l); border:1px solid #eedeb2;}
+  .b-teal{background:var(--teal-l); border:1px solid #bfe4d6;}
+  .box b{display:block; margin-bottom:4px;}
+  .check{list-style:none; font-size:13px;}
+  .check li{padding:4px 0 4px 26px; position:relative;}
+  .check input{position:absolute; left:0; top:6px;}
+  .check input:checked + span{color:var(--sub); text-decoration:line-through;}
+  .foot{color:var(--sub); font-size:12px; margin-top:24px; text-align:center;}
+  code{background:#eef2f6; border-radius:4px; padding:1px 5px; font-size:12px; font-family:Consolas,monospace;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>实习冲刺计划</h1>
+<div class="meta">2026.8.29（今天）→ 10月入职 &nbsp;|&nbsp; 目标岗位：广州 AIGC 实习（虎牙 / 网易互娱 / YY / 腾讯WXG / BOSS直聘本地岗）</div>
+
+<div class="goal">
+<b>总目标：</b>9月12日前拿出「作品集v1 + 简历」，9月13日开始海投，10月入职。<br>
+<b>底线思维：</b>作品集不需要完美才能投——投递周期本身要1-2周，边投边补。真正卡死投递的只有一件事：<b>作品集一个字都没有</b>。<br>
+<b>每天固定动作：</b>算法45-60分钟（雷打不动，见第四节清单）。
+</div>
+
+<h2>一、Phase 0 · 冲刺期（8.29 - 9.5，开学前/开学初，每天6-8小时）</h2>
+<table>
+<tr><th style="width:120px">日期</th><th>项目主线（3-5h）</th><th>算法（45-60min）</th></tr>
+<tr><td class="day">8.29 六（今天）</td><td>① 修4个bug（AdaIN: <code>nn.ReLu→nn.ReLU</code>×4、<code>return self.decoder(x)</code>；CycleGAN: <code>_init_weight</code>、<code>nn.init.constant_</code>）② 跑通 <code>python app.py</code> 全Tab点一遍 ③ 从 outputs/ 挑出最好的图，开始攒「作品池」文件夹</td><td class="algo">手撕：NMS（第一遍）+ IoU</td></tr>
+<tr><td class="day">8.30 日</td><td>写 ControlNet Tab：用 diffusers 的 <code>StableDiffusionControlNetPipeline</code>，先上 canny + lineart 两种条件；生成「无控制 vs 有控制」对比图 6-8 组</td><td class="algo">手撕：softmax + 交叉熵</td></tr>
+<tr><td class="day">8.31 一</td><td>ControlNet 加 openpose 姿态控制，调 prompt 出高质量图；挑出最惊艳的 10 组对比图</td><td class="algo">手撕：kmeans + 复习BN原理</td></tr>
+<tr><td class="day">9.1 二</td><td>LoRA 数据集准备：定一个主题（某个画风/角色），收集 30-50 张图；用 BLIP 自动打标 + 人工修标</td><td class="algo">LeetCode 简单×2（数组）</td></tr>
+<tr><td class="day">9.2 三</td><td>kohya-ss/sd-scripts 环境 + 小步数试跑（先 500 步验证流程能走通）</td><td class="algo">LeetCode 简单×2（哈希）</td></tr>
+<tr><td class="day">9.3 四</td><td>LoRA 正式训练（2000-4000步，边训边看 loss）；等待时间顺手给 Gradio 加 SRCNN Tab</td><td class="algo">手撕：NMS（第二遍，限时15分钟）</td></tr>
+<tr><td class="day">9.4 五</td><td>LoRA 出对比图（底模 vs LoRA前后），和 ControlNet 组合出图（可控+个性化同框=项目招牌图）</td><td class="algo">LeetCode 简单×2（字符串）</td></tr>
+<tr><td class="day">9.5 六</td><td>装 ComfyUI：跑通 txt2img / img2img 基础工作流并截图</td><td class="algo">手撕：IoU（第二遍）+ 交叉熵</td></tr>
+</table>
+
+<div class="box b-red"><b>⚠️ Phase 0 唯一的风险控制：LoRA 3天熔断</b>
+9.2-9.4 是全计划最大的不确定点（环境坑、显卡、数据质量都可能卡住）。规则：9.4 晚上如果 LoRA 还没跑出像样的结果，<b>立即放弃</b>，简历写「LoRA 训练进行中」，作品集用 ControlNet + SD + 风格迁移投（已够应用层和大部分工程层门槛）。止损比死磕重要。</div>
+
+<h2>二、Phase 1 · 收尾期（9.6 - 9.12，上课模式，每晚3小时）</h2>
+<table>
+<tr><th style="width:120px">日期</th><th>晚上3小时怎么分</th></tr>
+<tr><td class="day">9.6 日</td><td>白天：ComfyUI 复现 ControlNet 工作流 + 截图（补完最后一块作品集素材）。晚上太极汇报，不动手</td></tr>
+<tr><td class="day">9.7 一</td><td>作品集排版 2h（HTML或PDF：作品→1句话说明→用了什么技术）+ 算法 1h</td></tr>
+<tr><td class="day">9.8 二</td><td>写简历 2h（一页纸，项目用「做了什么→怎么做的→结果如何」；附作品集链接）+ 算法 1h</td></tr>
+<tr><td class="day">9.9 三</td><td>CV八股开始：每晚30min口头答一遍清单（见下）+ 项目收尾 2h + 算法</td></tr>
+<tr><td class="day">9.10 四</td><td>写 README（架构图 + 各模块一句话原理 + 结果图）+ 算法</td></tr>
+<tr><td class="day">9.11 五</td><td>作品集 + 简历终稿；注册虎牙招聘官网/BOSS/实习僧账号，把订阅搜好</td></tr>
+<tr><td class="day">9.12 六</td><td><b>作品集v1定稿</b>。模拟自我介绍：对着手机录一遍 90 秒版，听回放改</td></tr>
+</table>
+
+<div class="box b-amber"><b>八股清单（每天口头答一遍，答不顺的标记重背）</b>
+BN原理/训练测试区别 → 梯度消失与爆炸 → ResNet为什么有效 → 感受野 → Transformer结构/QKV → Attention复杂度 → <b>DDPM加噪去噪流程（结合李宏毅Diffusion课）</b> → SD的latent空间/VAE/U-Net → VGG为什么能当特征提取器 → <b>LoRA原理（低秩分解为什么有效）</b> → <b>ControlNet的zero-conv怎么注入</b>。后三个是你简历上的项目，面试必被深挖，优先级最高。</div>
+
+<h2>三、Phase 2 · 投递期（9.13 起）</h2>
+<div class="card">
+<ul class="check">
+<li><input type="checkbox" id="c1"><span><b>9.13-9.19 海投周：</b>每天15-20个。虎牙官网(hr.huya.com) + BOSS直聘(主动打招呼) + 实习僧 + 腾讯WXG(join.qq.com, 当彩票) + 牛客找网易内推帖</span></li>
+<li><input type="checkbox" id="c2"><span>陌生电话必接（HR觉得合适会直接打）。微信加完HR当天回消息</span></li>
+<li><input type="checkbox" id="c3"><span>投递同步继续打磨作品集——面试官看的是投递时发的版本，每周迭代一版</span></li>
+<li><input type="checkbox" id="c4"><span>约到面试的前一晚：牛客搜该公司实习面经 + 把简历上每个项目被追问的「为什么」想清楚</span></li>
+<li><input type="checkbox" id="c5"><span>每场面试后当天复盘：被问倒的题记下来，两天内补掉</span></li>
+<li><input type="checkbox" id="c6"><span>拿offer：核对协议（工作内容/补贴/发薪日/离职规则/保险）→ 1-2天内答复 → 更新简历</span></li>
+</ul>
+</div>
+
+<h2>四、算法轻量刷题方案 <span class="tag">每天45-60分钟，雷打不动，贯穿全程</span></h2>
+
+<div class="card">
+<b>第一周：手撕十函数（每天1个，第二周各再限时重写一遍）</b>
+<table style="margin-top:8px">
+<tr><th>函数</th><th>为什么考</th></tr>
+<tr><td>NMS 非极大值抑制</td><td>CV实习面经出现率第一，虎牙网易都问</td></tr>
+<tr><td>IoU 交并比</td><td>和NMS打包出现</td></tr>
+<tr><td>softmax + 交叉熵</td><td>基础中的基础，常要求NumPy版</td></tr>
+<tr><td>kmeans</td><td>无监督经典，NumPy实现</td></tr>
+<tr><td>BN（训练/推理两种模式）</td><td>八股+手撕双重考</td></tr>
+</table>
+</div>
+
+<div class="card">
+<b>第二周起：LeetCode 简单+中等精选约50题（每天2题，9月底刷完第一轮）</b>
+<span class="pill p-blue">数组×10</span><span class="pill p-blue">字符串×10</span><span class="pill p-blue">哈希×8</span><span class="pill p-blue">双指针×8</span><span class="pill p-blue">二分×6</span><span class="pill p-blue">链表×8</span><br>
+<span style="font-size:12px; color:var(--sub)">不碰：困难题、复杂DP、图论。挂科式刷法（一个题卡2小时）禁止——15分钟没思路直接看题解，明天重做。</span>
+</div>
+
+<h2>五、每周节奏总览</h2>
+<table>
+<tr><th>时间</th><th>白天/主块</th><th>固定项</th></tr>
+<tr><td class="day">8.29-9.5</td><td>项目冲刺（ControlNet→LoRA→ComfyUI）</td><td>算法60min；周日晚上留给太极汇报</td></tr>
+<tr><td class="day">9.6-9.12</td><td>作品集+简历+README收尾</td><td>算法60min + 八股30min</td></tr>
+<tr><td class="day">9.13-9.30</td><td>海投 + 面试 + 作品集迭代</td><td>算法60min + 面经复盘</td></tr>
+<tr><td class="day">10月起</td><td>入职实习，晚上保留算法手感</td><td>周末开始捡考研数学</td></tr>
+</table>
+
+<div class="box b-teal"><b>三条原则，忘了就回来看</b>
+1. <b>先能投，再完美</b>——9.13雷打不动开始投，作品集永远可以再改。<br>
+2. <b>LoRA卡3天就熔断</b>——它是加分项不是门槛，别为它牺牲整个投递窗口。<br>
+3. <b>项目 > 算法</b>——时间冲突时永远先保作品集；算法是面试扣分项，作品集是入场券。</div>
+
+<div class="foot">生成于 2026-08-29 · multimodal-engine 实习冲刺计划 · 勾选状态仅本地保存</div>
+</div>
+
+<script>
+document.querySelectorAll('.check input').forEach(i=>{
+  const k='internplan_'+i.id;
+  i.checked=localStorage.getItem(k)==='1';
+  i.addEventListener('change',()=>localStorage.setItem(k,i.checked?'1':'0'));
+});
+</script>
+</body>
+</html>

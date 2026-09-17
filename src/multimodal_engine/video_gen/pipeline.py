@@ -19,7 +19,8 @@ def _read_config(config_path):
         logger.error(f"错误：找不到配置文件 {config_path}")
         raise
     except yaml.YAMLError as e:
-        logger.error
+        logger.error(f"错误：YAML 配置文件解析失败 - {e}")
+        raise
 
 class ImageToVideo:
     def __init__(self, config_path=None):
@@ -46,9 +47,11 @@ class ImageToVideo:
         logger.info(f"[视频生成] 加载模型中...")
         try:
             self.pipe = StableVideoDiffusionPipeline.from_pretrained(
-                self.model_id, torch_dtype=torch.float32
+                self.model_id, torch_dtype=torch.float16, variant="fp16"
             )
-            self.pipe = self.pipe.to(self.device)
+            self.pipe.enable_model_cpu_offload()
+            self.pipe.enable_attention_slicing()
+
         except Exception as e:
             logger.error(f"错误：模型加载失败 - {e}")
             raise

@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from multimodal_engine.style_transfer.transfer import StyleTransfer
+from multimodal_engine.style_transfer.gatys import StyleTransfer
 
 # 模拟的配置文件内容（与 style_transfer_config.yaml 结构一致）
 SAMPLE_CONFIG = """
@@ -27,7 +27,7 @@ def temp_config_file(tmp_path):
 def test_config_loading(temp_config_file):
     """测试配置加载：能正确读取 content_layers, style_layers 及优化参数"""
     # Mock 掉 VGGFeatureExtractor，避免真正加载模型
-    with patch("multimodal_engine.style_transfer.transfer.VGGFeatureExtractor") as mock_vgg:
+    with patch("multimodal_engine.style_transfer.gatys.VGGFeatureExtractor") as mock_vgg:
         mock_extractor = MagicMock()
         mock_vgg.return_value = mock_extractor
 

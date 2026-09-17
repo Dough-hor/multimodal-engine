@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>scale 1.5 甜点精扫 — 有点像了之后的下一步</title>
+<style>
+  body { font-family: "Microsoft YaHei", sans-serif; background: #14161a; color: #e8e6e3; margin: 0; padding: 24px; }
+  h1 { font-size: 22px; color: #ffd166; }
+  h2 { font-size: 17px; color: #8ecae6; margin: 28px 0 10px; border-left: 4px solid #8ecae6; padding-left: 10px; }
+  p { line-height: 1.7; color: #c9c7c3; font-size: 14px; }
+  .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 12px 0 22px; }
+  .card { background: #1e2127; border-radius: 10px; padding: 10px; text-align: center; }
+  .card.best { border: 2px solid #ffd166; box-shadow: 0 0 14px rgba(255,209,102,.25); }
+  .card img { width: 100%; border-radius: 6px; }
+  .name { font-size: 13px; margin: 8px 0 3px; font-weight: bold; color: #f0f0f0; }
+  .score { font-size: 12px; color: #9aa0a6; }
+  .score b { color: #8ecae6; }
+  .tag-best { color: #ffd166; font-weight: bold; font-size: 12px; display: block; margin-top: 2px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 10px 0; }
+  th, td { border: 1px solid #33363d; padding: 7px 10px; text-align: left; }
+  th { background: #23262d; color: #8ecae6; }
+  tr.best td { background: rgba(255,209,102,.08); }
+  code { background: #2a2d34; padding: 2px 6px; border-radius: 4px; font-size: 12.5px; color: #ffd166; }
+  .hint { background: #1d2a22; border-left: 4px solid #6fcf97; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+  .fixnote { background: #2a2330; border-left: 4px solid #b78cff; padding: 12px 14px; border-radius: 6px; margin: 14px 0; }
+</style>
+</head>
+<body>
+<h1>scale 1.5 甜点精扫 — "有点像了"之后，把甜点钉死</h1>
+<p>你说 scale 1.5 有点像了 → 这轮围绕 1.5 精探（1.2 / 1.5 / 1.8），并顺手修了一个大问题：<b>发灰</b>。
+修复方法只改了 prompt 两处，零成本：负面词追加 <code>monochrome, greyscale</code>，彩色版正面词追加 <code>vibrant colors, vivid</code>。</p>
+
+<div class="fixnote">
+  <b>重要发现</b>：上一轮 scale 1.5 "色彩崩落"（饱和度 0.27、hue_sim 0.14~0.17）的主因是<b>灰度化</b>，不是色相跑偏。
+  这次加了灰度负面词后，同 scale 1.5 饱和度直接回到 0.69~0.79、hue_sim 回升到 0.34~0.50 —— 之前量化表格里的"越拧越歪"有一半是灰图假象。
+</div>
+
+<h2>v5b_e2（旧甜点）：1.2 → 1.5 → 1.5彩色 → 1.8</h2>
+<div class="row">
+  <div class="card"><img src="scale_fine/v5b_e2_scale_1.2.png"><div class="name">1.2</div><div class="score">hue <b>0.363</b> · sat <b>0.679</b></div></div>
+  <div class="card"><img src="scale_fine/v5b_e2_scale_1.5.png"><div class="name">1.5（你说的那张）</div><div class="score">hue <b>0.407</b> · sat <b>0.692</b></div></div>
+  <div class="card"><img src="scale_fine/v5b_e2_scale_1.5_vivid.png"><div class="name">1.5 + 彩色修正</div><div class="score">hue <b>0.462</b> · sat <b>0.785</b></div></div>
+  <div class="card"><img src="scale_fine/v5b_e2_scale_1.8.png"><div class="name">1.8</div><div class="score">hue <b>0.424</b> · sat <b>0.681</b></div></div>
+</div>
+
+<h2>v5c_e3（768 新训）：1.2 → 1.5 → 1.5彩色 → 1.8</h2>
+<div class="row">
+  <div class="card"><img src="scale_fine/v5c_e3_scale_1.2.png"><div class="name">1.2</div><div class="score">hue <b>0.338</b> · sat <b>0.700</b></div></div>
+  <div class="card"><img src="scale_fine/v5c_e3_scale_1.5.png"><div class="name">1.5</div><div class="score">hue <b>0.339</b> · sat <b>0.695</b></div></div>
+  <div class="card best"><img src="scale_fine/v5c_e3_scale_1.5_vivid.png"><div class="name">1.5 + 彩色修正</div><div class="score">hue <b>0.502</b> · sat <b>0.789</b></div><span class="tag-best">★ 双指标全场最高</span></div>
+  <div class="card"><img src="scale_fine/v5c_e3_scale_1.8.png"><div class="name">1.8</div><div class="score">hue <b>0.323</b> · sat <b>0.672</b></div></div>
+</div>
+
+<h2>参考系：金标准（社区 Chanter LoRA，同引擎出图）</h2>
+<div class="row">
+  <div class="card"><img src="golden_ref/r1_same_scale_1.0.png"><div class="name">同款prompt · scale 1.0</div><div class="score">hue <b>0.31~0.34</b></div></div>
+  <div class="card"><img src="golden_ref/r2_cyber_scale_1.0.png"><div class="name">cyberpunk · scale 1.0</div><div class="score">hue <b>0.587</b> · sat <b>0.47</b></div></div>
+  <div class="card"><img src="scale_probe/v5c_e3_scale_0.0.png"><div class="name">无LoRA基线（对照）</div><div class="score">hue <b>0.367</b></div></div>
+  <div class="card"><img src="scale_probe/v5b_e2_scale_1.5.png"><div class="name">旧1.5（未修灰度）</div><div class="score">hue <b>0.166</b> · sat <b>0.272</b> 发灰</div></div>
+</div>
+
+<h2>量化总表</h2>
+<table>
+  <tr><th>权重</th><th>scale</th><th>版本</th><th>hue_sim</th><th>饱和度</th><th>说明</th></tr>
+  <tr><td>v5b_e2</td><td>1.2</td><td>素</td><td>0.363</td><td>0.679</td><td>已有风格迹象</td></tr>
+  <tr><td>v5b_e2</td><td>1.5</td><td>素</td><td>0.407</td><td>0.692</td><td>你说"有点像"的档位</td></tr>
+  <tr><td>v5b_e2</td><td>1.5</td><td>彩色修正</td><td>0.462</td><td>0.785</td><td>色彩修复+13%</td></tr>
+  <tr><td>v5b_e2</td><td>1.8</td><td>素</td><td>0.424</td><td>0.681</td><td>继续上探略有回落</td></tr>
+  <tr><td>v5c_e3</td><td>1.2</td><td>素</td><td>0.338</td><td>0.700</td><td>-</td></tr>
+  <tr><td>v5c_e3</td><td>1.5</td><td>素</td><td>0.339</td><td>0.695</td><td>-</td></tr>
+  <tr class="best"><td><b>v5c_e3</b></td><td><b>1.5</b></td><td><b>彩色修正</b></td><td><b>0.502</b></td><td><b>0.789</b></td><td><b>全场最高</b></td></tr>
+  <tr><td>v5c_e3</td><td>1.8</td><td>素</td><td>0.323</td><td>0.672</td><td>过头</td></tr>
+</table>
+
+<div class="hint">
+  <b>你的判定清单（30 秒）</b><br>
+  1. 两张"1.5 + 彩色修正"（第3列，金框那张重点看）——风格还在吗？颜色是不是顺眼多了？<br>
+  2. v5b 和 v5c 的彩色版对比——768 那版（v5c）的双指标更高，但<b>你的眼睛说了算</b>：线稿/笔触哪版更米山舞？<br>
+  3. 往上 1.8 有没有比 1.5 更像？像 → 甜点可能还要更高；崩了 → 1.5 锁定。<br>
+  4. 别忘了顺手回答上一个问题：金标准那张（参考系第1张）你认不认得出是米山舞？
+</div>
+
+<p style="color:#9aa0a6;font-size:13px">生成口径：seed=42 · 30 steps · cfg 7.5 · prompt「yoneya style, solo, looking at viewer[, vibrant colors, vivid], masterpiece, best quality」· 负面追加 monochrome, greyscale</p>
+</body>
+</html>

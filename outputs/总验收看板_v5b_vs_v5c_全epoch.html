@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v5b vs v5c 全 epoch 总验收看板 · 米山舞 LoRA</title>
+<style>
+  :root {
+    --bg: #14161c; --card: #1d2029; --card2: #242836; --line: #333a4d;
+    --txt: #e8eaf0; --sub: #9aa3b5; --dim: #6b7488;
+    --accent: #f472b6; --good: #4ade80; --warn: #fbbf24;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--txt); font-family: "Segoe UI", "Microsoft YaHei", sans-serif; padding: 24px 18px 60px; }
+  .wrap { max-width: 1500px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 18px; }
+  h1 { font-size: 23px; }
+  h1 .dot { color: var(--accent); }
+  .sub { color: var(--sub); font-size: 12.5px; margin-top: 8px; line-height: 1.9; }
+  .tag { display: inline-block; background: var(--card2); border: 1px solid var(--line); border-radius: 999px; padding: 1px 11px; margin: 0 3px; font-size: 11.5px; color: var(--sub); }
+  .hl { color: var(--accent); } .gd { color: var(--good); } .wn { color: var(--warn); }
+
+  .sec-title { font-size: 16px; margin: 26px 0 10px; padding-left: 10px; border-left: 3px solid var(--accent); }
+  .sec-title small { color: var(--dim); font-size: 11.5px; font-weight: 400; margin-left: 8px; }
+
+  .tbl { display: grid; grid-template-columns: 150px repeat(5, 1fr); gap: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; margin-bottom: 10px; }
+  .tbl.style { grid-template-columns: 150px repeat(4, 1fr); }
+  .cell { background: var(--card2); border-radius: 8px; padding: 6px; min-width: 0; }
+  .cell .cap { font-size: 10.5px; color: var(--dim); line-height: 1.5; margin-bottom: 5px; text-align: center; }
+  .cell .cap b { color: var(--sub); font-size: 11px; }
+  .cell img { width: 100%; border-radius: 5px; border: 1px solid var(--line); cursor: zoom-in; display: block; }
+  .row-h { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 4px; padding: 4px 8px; }
+  .row-h .pn { font-size: 13px; font-weight: 700; color: var(--accent); }
+  .row-h .pp { font-size: 10px; color: var(--dim); line-height: 1.5; word-break: break-all; }
+  .row-h .sc { font-size: 10px; color: var(--dim); }
+
+  .col-h { text-align: center; padding: 6px 2px; }
+  .col-h .v { font-size: 13.5px; font-weight: 700; }
+  .col-h .m { font-size: 10px; color: var(--dim); line-height: 1.6; }
+  .col-h.v5b .v { color: var(--good); }
+  .col-h.e1 .v { color: #7dd3fc; } .col-h.e2 .v { color: #c4b5fd; } .col-h.e3 .v { color: var(--accent); } .col-h.e4 .v { color: #fcd34d; }
+  .best { outline: 2px solid var(--good); outline-offset: 1px; border-radius: 10px; }
+  .tag-best { background: rgba(74,222,128,.15); color: var(--good); border: 1px solid rgba(74,222,128,.4); }
+
+  .notes { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; font-size: 12.5px; color: var(--sub); line-height: 1.9; margin-top: 14px; }
+  .notes b { color: var(--txt); }
+  footer { text-align: center; font-size: 11px; color: var(--dim); margin-top: 22px; line-height: 1.8; }
+  .chk { list-style: none; } .chk li { padding-left: 18px; position: relative; } .chk li::before { content: "☐"; position: absolute; left: 0; color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>米山舞 LoRA · v5b vs v5c <span class="dot">全版本总验收</span></h1>
+  <p class="sub">
+    <span class="tag">触发词 yoneya style</span><span class="tag">seed=42</span><span class="tag">30 steps</span><span class="tag">cfg 7.5</span>
+    <span class="tag">AnythingV5 底模</span>
+  </p>
+  <p class="sub">
+    目的：768px 训练是否让<b class="gd">线稿/笔触</b>米山舞化（量化测不到，只能肉眼）<br>
+    每张图均可点击放大。横排 = 同 prompt 同 seed 唯一变量是权重
+  </p>
+</header>
+
+<!-- ═══════════ 上半区：内容主导口径（scale 0.8，贴近真实使用） ═══════════ -->
+<div class="sec-title">① 内容主导口径 <small>prompt 带场景描述 · lora_scale 0.8 · 与日常使用一致 —— 结论：五版几乎分不出（数据证实你的直觉）</small></div>
+
+<div class="tbl">
+  <div></div>
+  <div class="col-h v5b"><div class="v">v5b e2</div><div class="m">512训·dim32<br>sample 0.754 甜点<br>引擎图 0.482</div></div>
+  <div class="col-h e1"><div class="v">v5c e1</div><div class="m">768训·dim64<br>sample 0.701<br>引擎图 0.476</div></div>
+  <div class="col-h e2"><div class="v">v5c e2</div><div class="m">768训·dim64<br>sample 0.681<br>引擎图 0.455</div></div>
+  <div class="col-h e3"><div class="v">v5c e3</div><div class="m">768训·dim64<br>sample 0.767 ↑<br>引擎图 0.466</div></div>
+  <div class="col-h e4"><div class="v">v5c e4</div><div class="m">768训·dim64<br>sample 0.684<br>引擎图 0.467</div></div>
+
+  <div class="row-h"><span class="pn">g1</span><span class="pp">yoneya style, 1girl, cyberpunk city, neon lights, detailed eyes, masterpiece, best quality</span></div>
+  <div class="cell"><img src="acceptance_v5b/g1_cyberpunk.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_e1/g1_cyberpunk.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_e2/g1_cyberpunk.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c/g1_cyberpunk.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_e4/g1_cyberpunk.png" onclick="window.open(this.src)"></div>
+
+  <div class="row-h"><span class="pn">g2</span><span class="pp">yoneya style, 1girl, white dress, standing in flower field, masterpiece, best quality</span></div>
+  <div class="cell"><img src="acceptance_v5b/g2_flower.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_e1/g2_flower.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_e2/g2_flower.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c/g2_flower.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_e4/g2_flower.png" onclick="window.open(this.src)"></div>
+
+  <div class="row-h"><span class="pn">g3</span><span class="pp">yoneya style, 1girl, school uniform, classroom, sunset, looking at viewer, masterpiece, best quality</span></div>
+  <div class="cell"><img src="acceptance_v5b/g3_classroom.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_e1/g3_classroom.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_e2/g3_classroom.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c/g3_classroom.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_e4/g3_classroom.png" onclick="window.open(this.src)"></div>
+
+  <div class="row-h"><span class="pn">g4</span><span class="pp">yoneya style, 1girl, rainy street at night, umbrella, monochrome atmosphere, masterpiece, best quality</span></div>
+  <div class="cell"><img src="acceptance_v5b/g4_rain_gray.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_e1/g4_rain_gray.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_e2/g4_rain_gray.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c/g4_rain_gray.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_e4/g4_rain_gray.png" onclick="window.open(this.src)"></div>
+</div>
+
+<div class="tbl">
+  <div class="row-h" style="grid-column:1/-1; flex-direction:row; align-items:center;"><span class="pn">g5 图生图</span><span class="pp" style="color:var(--sub)">yoneya style, 1girl, masterpiece, best quality · strength 0.6 · 仅 v5b 与 e3 有对照</span></div>
+  <div></div>
+  <div class="col-h v5b"><div class="v">v5b e2</div><div class="m">512训·dim32</div></div>
+  <div class="col-h e3"><div class="v">v5c e3</div><div class="m">768训·dim64</div></div>
+  <div></div>
+  <div></div>
+  <div class="row-h"></div>
+  <div class="cell"><img src="acceptance_v5b/g5_img2img.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c/g5_img2img.png" onclick="window.open(this.src)"></div>
+  <div></div>
+  <div></div>
+</div>
+
+<!-- ═══════════ 下半区：风格压力测试（scale 1.0 满开，极简 prompt） ═══════════ -->
+<div class="sec-title">② 风格压力测试 <small>prompt 只留触发词 + 训练高频词 · lora_scale 1.0 满开 —— 风格全开，epoch 差异放大（此组色彩指标失效，纯肉眼判断）</small></div>
+
+<div class="tbl style">
+  <div></div>
+  <div class="col-h e1"><div class="v">v5c e1</div><div class="m">768训·dim64</div></div>
+  <div class="col-h e2"><div class="v">v5c e2</div><div class="m">768训·dim64</div></div>
+  <div class="col-h e3"><div class="v">v5c e3</div><div class="m">768训·dim64 · sample 最高</div></div>
+  <div class="col-h e4"><div class="v">v5c e4</div><div class="m">768训·dim64</div></div>
+
+  <div class="row-h"><span class="pn">s1</span><span class="pp">yoneya style, solo, looking at viewer, masterpiece, best quality</span><span class="sc">solo=训练集第一高频词(162次)</span></div>
+  <div class="cell"><img src="acceptance_v5c_style_e1/s1_solo.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_style_e2/s1_solo.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_style_e3/s1_solo.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_style_e4/s1_solo.png" onclick="window.open(this.src)"></div>
+
+  <div class="row-h"><span class="pn">s2</span><span class="pp">yoneya style, 1girl, long hair, portrait, detailed eyes, masterpiece, best quality</span><span class="sc">只留基础人设，不指定场景/服装/配色</span></div>
+  <div class="cell"><img src="acceptance_v5c_style_e1/s2_girl.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_style_e2/s2_girl.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_style_e3/s2_girl.png" onclick="window.open(this.src)"></div>
+  <div class="cell"><img src="acceptance_v5c_style_e4/s2_girl.png" onclick="window.open(this.src)"></div>
+</div>
+
+<div class="notes">
+  <b>参考：v5b 的 scale 梯度旧图</b>（v5b 当时测过拉高风格旋钮的效果，可对比"风格满开"该长什么样）<br>
+  <img src="acceptance_v5b/scale_1.0.png" style="width:170px;border-radius:6px;border:1px solid var(--line);cursor:zoom-in" onclick="window.open(this.src)"> scale 1.0 (hue 0.825)
+  &nbsp;&nbsp;<img src="acceptance_v5b/scale_1.2.png" style="width:170px;border-radius:6px;border:1px solid var(--line);cursor:zoom-in" onclick="window.open(this.src)"> scale 1.2 (hue 0.833)
+</div>
+
+<div class="notes">
+  <b>肉眼验收 checklist（重点自上而下）：</b>
+  <ul class="chk">
+    <li><b>① 线稿/笔触（768 的核心赌注）</b>——头发丝、衣褶线条是否干脆有手绘感，还是 AI 软糊？跟 v5b 比有没有"更米山舞"的线条？</li>
+    <li><b>② 风格压力组 s1/s2</b>——同一个人像构图上，哪个 epoch 的五官/上色最有"米山舞味"？谁最像训练集里那种插画感？</li>
+    <li><b>③ 色彩</b>——有没有发灰发脏？（风格组 sat 0.21~0.42 偏低是隐患点）暗部、阴影过渡是否干净？</li>
+    <li><b>④ 崩坏</b>——五官/手部/结构有没有崩？哪版最稳？</li>
+    <li><b>⑤ 终极一问</b>——挑一张放简历作品集，你会选哪版哪张？</li>
+  </ul>
+</div>
+
+<footer>
+  量化口径：sample 分 = 训练采样图 vs 参考集(训练彩图前30张) 色相直方图余弦；引擎图分 = 本页引擎验收图同参考集（组内互比）<br>
+  数据结论：内容口径五版均值 0.455~0.482 挤成一团 → 色彩层 768 轮没有拉开差距；能否翻盘全看肉眼对①线稿的判断
+</footer>
+</div>
+</body>
+</html>

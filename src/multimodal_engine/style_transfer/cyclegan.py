@@ -108,17 +108,20 @@ class cycleGAN(nn.Module):
         self.identity_weight=5.0 # 恒等损失权重：保证颜色风格一致
 
         # 初始化权重:在第一次调用conv2d的时候将卷积里的所有权重优化，相当于让我从一个较好的初始权重开始训练而不是随机的
-        self._init_weights()
+        self._init_weight()
 
     def _init_weight(self,mean=0.0,std=0.02):
         for m in self.modules(): # modules是pytorch自带的搜索工具，自动找到所有层
             if isinstance(m,(nn.Conv2d,nn.ConvTranspose2d)): # 判断m是不是，后面的两种层次
                 nn.init.normal_(m.weight,mean,std) # normal_设置随机数
                 if m.bias is not None:
-                    nn.init.constant(m.bias,0) # constant_设置固定值0
+                    nn.init.constant_(m.bias,0) # constant_设置固定值0
             elif isinstance(m,nn.InstanceNorm2d):
-                nn.init.constant_(m.weight,1)
-                nn.init.constant_(m.bias,0)
+                # InstanceNorm2d 默认 affine=False，此时 weight/bias 为 None，必须先判空
+                if m.weight is not None:
+                    nn.init.constant_(m.weight,1)
+                if m.bias is not None:
+                    nn.init.constant_(m.bias,0)
 
     # 不用于训练，用于生成图片（A->B）
     def forward(self,real_A):

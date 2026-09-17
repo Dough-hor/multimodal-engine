@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数字媒体课程 B站对照表</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    line-height: 1.7;
+    padding: 40px 20px;
+  }
+  .container { max-width: 1000px; margin: 0 auto; }
+  h1 {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 8px;
+    color: #1a1a1a;
+  }
+  .subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 40px;
+  }
+  .course-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .course-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+  }
+  .course-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .course-title { font-size: 22px; font-weight: 700; color: #1a1a1a; }
+  .course-desc { font-size: 13px; color: #999; margin-top: 2px; }
+  .relevance-tag {
+    display: inline-block;
+    background: #fff3e0;
+    color: #e65100;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+  .topic-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .topic-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: #555;
+    border-left: 3px solid #ddd;
+  }
+  .video-card {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    transition: box-shadow 0.2s;
+  }
+  .video-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .video-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .video-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+  .video-source {
+    font-size: 12px;
+    color: #999;
+    margin-top: 2px;
+  }
+  .recommend-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge-must { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+  .badge-good { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
+  .badge-alt  { background: #fafafa; color: #888; border: 1px solid #eee; }
+  .video-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #00a1d6;
+    color: #fff !important;
+    text-decoration: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 8px;
+    transition: background 0.2s;
+  }
+  .video-link:hover { background: #0091c2; }
+  .video-bv { font-size: 12px; color: #aaa; margin-top: 4px; }
+  .watch-guide {
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #666;
+  }
+  .watch-guide strong { color: #333; }
+  .watch-guide ul { margin-left: 18px; margin-top: 6px; }
+  .watch-guide li { margin-bottom: 3px; }
+  .legend {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 30px;
+    font-size: 13px;
+    color: #888;
+  }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .legend .dot { width: 10px; height: 10px; border-radius: 3px; }
+  .summary-box {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 12px;
+    padding: 28px;
+    color: #fff;
+    margin-top: 20px;
+  }
+  .summary-box h3 { font-size: 18px; margin-bottom: 12px; }
+  .summary-box p { font-size: 14px; opacity: 0.95; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>数字媒体课程 — B站视频对照表</h1>
+  <p class="subtitle">四门课 × 对应B站课程 × 重点观看内容 | 基于你的 multimodal-engine 项目（风格迁移 / 图像生成 / 视频生成）定制</p>
+
+  <div class="legend">
+    <span><span class="dot" style="background:#c8e6c9"></span> 必看（核心）</span>
+    <span><span class="dot" style="background:#bbdefb"></span> 推荐（重要）</span>
+    <span><span class="dot" style="background:#eee"></span> 备选（补充）</span>
+  </div>
+
+  <!-- ===== 1. 数字图像处理 ===== -->
+  <div class="course-section">
+    <div class="course-header">
+      <div class="course-icon" style="background:#e8f5e9">📷</div>
+      <div>
+        <div class="course-title">数字图像处理</div>
+        <div class="course-desc">冈萨雷斯教材体系 · 图像底层原理到频域分析</div>
+      </div>
+      <span class="relevance-tag">你的项目：风格迁移前置知识</span>
+    </div>
+
+    <div class="topic-list">
+      <div class="topic-item" style="border-color:#4caf50">图像采样与量化</div>
+      <div class="topic-item" style="border-color:#4caf50">灰度变换与直方图均衡</div>
+      <div class="topic-item" style="border-color:#4caf50">空间域滤波（平滑/锐化）</div>
+      <div class="topic-item" style="border-color:#2196f3">傅里叶变换与频域滤波</div>
+      <div class="topic-item" style="border-color:#2196f3">图像复原与重建</div>
+      <div class="topic-item" style="border-color:#2196f3">彩色图像处理</div>
+      <div class="topic-item" style="border-color:#bbb">形态学图像处理</div>
+      <div class="topic-item" style="border-color:#bbb">图像分割与特征提取</div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-card-top">
+        <div>
+          <div class="video-title">数字图像处理【杜克大学】（冈萨雷斯第三版）</div>
+          <div class="video-source">Duke University · 英文中字 · 全P完结</div>
+        </div>
+        <span class="recommend-badge badge-must">⭐ 必看</span>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">杜克大学 Guillermo Sapiro 教授主讲，直接对应冈萨雷斯教材，覆盖图像增强、滤波、变换、复原、压缩全流程，讲解清晰。你的 multimodal-engine 里 VGG19 特征提取、Gram Matrix 的底层原理都能在这里找到根基。</p>
+      <a class="video-link" href="https://www.bilibili.com/video/BV1j7411i78H" target="_blank">▶ B站观看</a>
+      <div class="video-bv">BV号：BV1j7411i78H</div>
+      <div class="watch-guide">
+        <strong>重点看的P数：</strong>
+        <ul>
+          <li>图像采样与量化 → 理解像素层面的数据表示</li>
+          <li>灰度变换与直方图 → 你的项目中图像预处理的基础</li>
+          <li>空间/频域滤波 → 风格迁移中特征图的底层操作</li>
+          <li>彩色图像处理 → RGB/LAB 色彩空间，图生图模块用到</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-card-top">
+        <div>
+          <div class="video-title">数字图像处理（冈萨雷斯版）— 电子科技大学 李庆嵘</div>
+          <div class="video-source">UESTC · 中文授课 · 70讲完整版</div>
+        </div>
+        <span class="recommend-badge badge-good">推荐</span>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">国内中文讲解最系统的版本，70讲逐章过冈萨雷斯教材。如果杜克的全英文吃力，这个是最佳中文替代。</p>
+      <a class="video-link" href="https://www.bilibili.com/video/av22153795" target="_blank">▶ B站观看</a>
+      <div class="video-bv">AV号：av22153795</div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-card-top">
+        <div>
+          <div class="video-title">数字图像处理【伦斯勒理工学院】（冈萨雷斯第三版）</div>
+          <div class="video-source">RPI · 英文中字</div>
+        </div>
+        <span class="recommend-badge badge-alt">备选</span>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">另一个英文公开课选择，可作为杜克版的补充参照。</p>
+      <a class="video-link" href="https://www.bilibili.com/video/BV137411H74f" target="_blank">▶ B站观看</a>
+      <div class="video-bv">BV号：BV137411H74f</div>
+    </div>
+  </div>
+
+  <!-- ===== 2. 计算机视觉/深度学习 ===== -->
+  <div class="course-section">
+    <div class="course-header">
+      <div class="course-icon" style="background:#e3f2fd">🧠</div>
+      <div>
+        <div class="course-title">计算机视觉 / 深度学习</div>
+        <div class="course-desc">CNN → 目标检测 → 图像生成 → 注意力机制</div>
+      </div>
+      <span class="relevance-tag">你的项目：核心直接相关</span>
+    </div>
+
+    <div class="topic-list">
+      <div class="topic-item" style="border-color:#4caf50">CNN 卷积神经网络</div>
+      <div class="topic-item" style="border-color:#4caf50">反向传播与优化算法</div>
+      <div class="topic-item" style="border-color:#4caf50">经典网络（AlexNet/VGG/ResNet）</div>
+      <div class="topic-item" style="border-color:#4caf50">图像分类与目标检测</div>
+      <div class="topic-item" style="border-color:#2196f3">图像生成（GAN / Diffusion）</div>
+      <div class="topic-item" style="border-color:#2196f3">注意力机制与 Transformer</div>
+      <div class="topic-item" style="border-color:#2196f3">语义分割</div>
+      <div class="topic-item" style="border-color:#bbb">视频理解（3D CNN / 双流网络）</div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-card-top">
+        <div>
+          <div class="video-title">动手学深度学习 v2 — 李沐</div>
+          <div class="video-source">亚马逊资深首席科学家 · PyTorch 实战 · 中文</div>
+        </div>
+        <span class="recommend-badge badge-must">⭐ 必看</span>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">李沐老师的课理论和代码并重，PyTorch 手把手实现。你的 multimodal-engine 用的就是 PyTorch + Diffusers，这套课是最直接的实战基础。CNN、ResNet、注意力机制、Transformer 都有覆盖，最后还讲目标检测和语义分割。</p>
+      <a class="video-link" href="https://www.bilibili.com/video/BV1PX4y1g7KC" target="_blank">▶ B站观看</a>
+      <div class="video-bv">BV号：BV1PX4y1g7KC ｜ 主页：space.bilibili.com/1567748478</div>
+      <div class="watch-guide">
+        <strong>对应你项目的重点P数：</strong>
+        <ul>
+          <li>P1-P12 深度学习基础（线性回归→多层感知机）→ 打地基</li>
+          <li>P13-P25 卷积神经网络（LeNet→AlexNet→VGG→ResNet）→ 你风格迁移用的 VGG19 在这里</li>
+          <li>P41-P50 注意力机制与 Transformer → Stable Diffusion 的核心架构</li>
+          <li>P46-P49 目标检测与语义分割 → 图像理解能力</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-card-top">
+        <div>
+          <div class="video-title">斯坦福 CS231n：深度学习与计算机视觉</div>
+          <div class="video-source">Stanford · 李飞飞团队 · 英文中字</div>
+        </div>
+        <span class="recommend-badge badge-must">⭐ 必看</span>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">计算机视觉领域的标杆课程。从 KNN、线性分类器讲到 CNN、RNN、目标检测、图像分割、生成模型（GAN）。你的图生图、风格迁移背后的视觉理论体系全在这里。</p>
+      <a class="video-link" href="https://www.bilibili.com/video/BV1nJ411z7fe" target="_blank">▶ B站观看（2017版）</a>
+      <a class="video-link" href="https://www.bilibili.com/video/BV1xV411R7i5" target="_blank">▶ 2023版</a>
+      <div class="video-bv">BV号：BV1nJ411z7fe（2017） / BV1xV411R7i5（2023）</div>
+      <div class="watch-guide">
+        <strong>重点看的部分：</strong>
+        <ul>
+          <li>Lecture 4-5：CNN 原理与反向传播 → 风格迁移的网络骨架</li>
+          <li>Lecture 9：CNN 架构（AlexNet/VGG/ResNet）→ VGG19 选型依据</li>
+          <li>Lecture 11：检测与分割 → 图生图的基础</li>
+          <li>Lecture 13：生成模型 GAN → 图像生成的理论起点</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-card-top">
+        <div>
+          <div class="video-title">吴恩达深度学习课程（中英字幕）</div>
+          <div class="video-source">DeepLearning.AI · 入门最友好 · 英文中字</div>
+        </div>
+        <span class="recommend-badge badge-good">推荐</span>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">吴恩达的课最适合零基础入门，讲解极其通俗。如果李沐的课跟起来吃力，先过一遍吴恩达打基础。CNN 那一章和序列模型那章对图像生成很有帮助。</p>
+      <a class="video-link" href="https://www.bilibili.com/video/BV164411b7dx" target="_blank">▶ B站观看</a>
+      <div class="video-bv">BV号：BV164411b7dx</div>
+    </div>
+  </div>
+
+  <!-- ===== 3. 计算机图形学 ===== -->
+  <div class="course-section">
+    <div class="course-header">
+      <div class="course-icon" style="background:#fff3e0">🎨</div>
+      <div>
+        <div class="course-title">计算机图形学</div>
+        <div class="course-desc">渲染管线 / 光栅化 / 光线追踪 / 着色</div>
+      </div>
+      <span class="relevance-tag">你的项目：图生视频渲染基础</span>
+    </div>
+
+    <div class="topic-list">
+      <div class="topic-item" style="border-color:#4caf50">线性代数与变换矩阵</div>
+      <div class="topic-item" style="border-color:#4caf50">光栅化（三角形→像素）</div>
+      <div class="topic-item" style="border-color:#4caf50">着色（Blinn-Phong模型）</div>
+      <div class="topic-item" style="border-color:#4caf50">纹理映射</div>
+      <div class="topic-item" style="border-color:#2196f3">光线追踪（Whitted / Path Tracing）</div>
+      <div class="topic-item" style="border-color:#2196f3">几何表示（曲线/曲面）</div>
+      <div class="topic-item" style="border-color:#2196f3">动画基础</div>
+      <div class="topic-item" style="border-color:#bbb">颜色感知与色彩空间</div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-card-top">
+        <div>
+          <div class="video-title">GAMES101：现代计算机图形学入门 — 闫令琪</div>
+          <div class="video-source">UCSB 教授 · GAMES平台 · 中文 · 22讲完结</div>
+        </div>
+        <span class="recommend-badge badge-must">⭐ 必看</span>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">国内公认最好的图形学入门课，B站播放量超 368 万。闫令琪老师从线性代数复习讲到光线追踪、动画，配套 8 个编程作业。你的 multimodal-engine 里图生视频模块涉及渲染管线，这门课是底层理论支撑。</p>
+      <a class="video-link" href="https://www.bilibili.com/video/BV1X7411F744" target="_blank">▶ B站观看</a>
+      <div class="video-bv">BV号：BV1X7411F744 ｜ 课程主页：games-cn.org/intro-graphics</div>
+      <div class="watch-guide">
+        <strong>重点看的Lecture：</strong>
+        <ul>
+          <li>Lec 2-4：线性代数与变换 → 图像变换的数学基础</li>
+          <li>Lec 5-6：光栅化与抗锯齿 → 像素如何从矢量数据生成</li>
+          <li>Lec 7-9：着色与纹理映射 → 理解材质和外观渲染</li>
+          <li>Lec 13-16：光线追踪 → 高质量渲染原理</li>
+          <li>Lec 20：色彩感知 → 图像生成的色彩理论基础</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-card-top">
+        <div>
+          <div class="video-title">GAMES202：高质量实时渲染 — 闫令琪</div>
+          <div class="video-source">UCSB · 进阶课程 · 中文</div>
+        </div>
+        <span class="recommend-badge badge-good">推荐</span>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">GAMES101 的进阶，讲实时阴影、PBR 物理着色、延迟渲染等。如果做图生视频的渲染质量优化，这门课是进阶必看。</p>
+      <a class="video-link" href="https://www.bilibili.com/video/BV1YK4y1T7yY" target="_blank">▶ B站观看</a>
+      <div class="video-bv">BV号：BV1YK4y1T7yY</div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-card-top">
+        <div>
+          <div class="video-title">GAMES104：现代游戏引擎 — 王希</div>
+          <div class="video-source">北大教授 · 引擎架构全景 · 中文</div>
+        </div>
+        <span class="recommend-badge badge-alt">备选</span>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">从游戏引擎角度讲渲染管线、物理系统、动画系统等，帮你建立宏观的图形学工程认知。对 multimodal-engine 的架构设计有参考价值。</p>
+      <a class="video-link" href="https://www.bilibili.com/video/BV1oU4y1R7Km" target="_blank">▶ B站观看</a>
+      <div class="video-bv">BV号：BV1oU4y1R7Km</div>
+    </div>
+  </div>
+
+  <!-- ===== 4. 数字媒体技术（专业课）===== -->
+  <div class="course-section">
+    <div class="course-header">
+      <div class="course-icon" style="background:#f3e5f5">🎬</div>
+      <div>
+        <div class="course-title">数字媒体技术（专业课）</div>
+        <div class="course-desc">多媒体信息处理 / 音视频编码 / 多媒体通信</div>
+      </div>
+      <span class="relevance-tag">你的项目：多模态整体框架</span>
+    </div>
+
+    <div class="topic-list">
+      <div class="topic-item" style="border-color:#4caf50">多媒体信息种类与特点</div>
+      <div class="topic-item" style="border-color:#4caf50">音频处理与编辑</div>
+      <div class="topic-item" style="border-color:#4caf50">图像/图形处理与编辑</div>
+      <div class="topic-item" style="border-color:#4caf50">视频处理与编辑</div>
+      <div class="topic-item" style="border-color:#2196f3">多媒体数据压缩编码</div>
+      <div class="topic-item" style="border-color:#2196f3">多媒体通信与网络</div>
+      <div class="topic-item" style="border-color:#2196f3">数字虚拟人与AIGC</div>
+      <div class="topic-item" style="border-color:#bbb">移动多媒体技术</div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-card-top">
+        <div>
+          <div class="video-title">多媒体应用设计师（第2版）精讲教程</div>
+          <div class="video-source">希赛网 · 软考中级 · 零基础入门 · 中文</div>
+        </div>
+        <span class="recommend-badge badge-must">⭐ 必看</span>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">这是B站上最系统的多媒体技术课程，虽然是软考方向，但内容覆盖了数字媒体技术专业课的全部核心知识点：多媒体信息处理（文字/音频/图像/视频）、多媒体通信协议、数据压缩编码等。你的 multimodal-engine 涉及图像+视频多模态，这门课帮你建立完整的知识框架。</p>
+      <a class="video-link" href="https://www.bilibili.com/video/BV1ZRtEzvEu3" target="_blank">▶ B站观看</a>
+      <div class="video-bv">BV号：BV1ZRtEzvEu3</div>
+      <div class="watch-guide">
+        <strong>重点看的章节：</strong>
+        <ul>
+          <li>第1章：多媒体定义、分类与技术基础 → 建立整体认知</li>
+          <li>第2章：多媒体信息处理（2.3音频 / 2.4图像 / 2.5视频）→ 直接对应你项目的三个模块</li>
+          <li>第3章：多媒体通信 → 理解视频传输/流媒体</li>
+          <li>第4章：移动多媒体 → 了解现代多媒体应用</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-card-top">
+        <div>
+          <div class="video-title">LearnOpenGL 中文版（配套教程）</div>
+          <div class="video-source">Joey de Vries · 文字教程 · 中文翻译</div>
+        </div>
+        <span class="recommend-badge badge-good">推荐</span>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">不是B站视频，但是数字媒体技术必学的 OpenGL 实战教程，跟着敲完就能写 mini 渲染器。配合 GAMES101 理论一起食用效果最佳。</p>
+      <a class="video-link" href="https://learnopengl-cn.github.io/" target="_blank">📖 在线阅读</a>
+    </div>
+
+    <div class="video-card">
+      <div class="video-card-top">
+        <div>
+          <div class="video-title">数字音视频技术（B站课程）</div>
+          <div class="video-source">高校公开课 · 中文</div>
+        </div>
+        <span class="recommend-badge badge-alt">备选</span>
+      </div>
+      <p style="font-size:13px;color:#666;margin-bottom:6px">音视频编码、压缩标准（H.264/H.265）、音视频同步等。你的图生视频模块最终输出的是视频文件，了解编码原理有帮助。</p>
+      <a class="video-link" href="https://www.bilibili.com/video/BV1dx4y1U7Ch" target="_blank">▶ B站观看</a>
+      <div class="video-bv">BV号：BV1dx4y1U7Ch</div>
+    </div>
+  </div>
+
+  <!-- ===== 学习路线建议 ===== -->
+  <div class="summary-box">
+    <h3>📚 建议学习顺序（结合你的 multimodal-engine 项目）</h3>
+    <p><strong>第一阶段（打地基）：</strong>李沐《动手学深度学习》P1-P25 → 理解 PyTorch + CNN，直接能看懂你项目里的 VGG19 代码</p>
+    <p><strong>第二阶段（图像原理）：</strong>杜克大学《数字图像处理》→ 补频域滤波、图像增强等底层知识</p>
+    <p><strong>第三阶段（视觉进阶）：</strong>CS231n → 深入目标检测、生成模型，理解 Stable Diffusion 背后的 CV 理论</p>
+    <p><strong>第四阶段（图形渲染）：</strong>GAMES101 → 补充渲染管线、光栅化、着色等图形学基础</p>
+    <p><strong>第五阶段（全局整合）：</strong>多媒体应用设计师课程 → 把图像/视频/音频串成完整的多媒体技术体系</p>
+    <p style="margin-top:12px;font-size:12px;opacity:0.8">⚠️ 所有BV号和链接基于2026年8月搜索结果，如果链接失效可在B站直接搜索课程名</p>
+  </div>
+</div>
+</body>
+</html>

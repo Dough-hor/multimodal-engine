@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v5b vs v5c 验收对比 · 米山舞 LoRA</title>
+<style>
+  :root {
+    --bg: #14161c; --card: #1d2029; --card2: #242836; --line: #333a4d;
+    --txt: #e8eaf0; --sub: #9aa3b5; --dim: #6b7488;
+    --accent: #f472b6; --good: #4ade80;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--txt); font-family: "Segoe UI", "Microsoft YaHei", sans-serif; padding: 28px 20px 60px; }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 20px; }
+  h1 { font-size: 25px; }
+  h1 .dot { color: var(--accent); }
+  .sub { color: var(--sub); font-size: 13px; margin-top: 8px; line-height: 1.8; }
+  .tag { display: inline-block; background: var(--card2); border: 1px solid var(--line); border-radius: 999px; padding: 2px 12px; margin: 0 4px; font-size: 12px; color: var(--sub); }
+
+  .cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+  .cmp-title { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; }
+  .cmp-title .pn { color: var(--accent); }
+  .cmp-title .prompt-txt { color: var(--dim); font-weight: 400; font-size: 12px; }
+  .side { background: var(--card2); border-radius: 10px; padding: 10px; }
+  .side .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; color: var(--sub); }
+  .side .head b { font-size: 13px; }
+  .side.v5b .head b { color: var(--dim); }
+  .side.v5c .head b { color: var(--good); }
+  .side img { width: 100%; border-radius: 6px; border: 1px solid var(--line); cursor: zoom-in; display: block; }
+  .side .tag2 { font-size: 10px; color: var(--dim); padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); }
+  .side.v5c .tag2 { color: var(--good); border-color: rgba(74,222,128,.4); }
+
+  .notes { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; font-size: 13px; color: var(--sub); line-height: 1.8; }
+  .notes b { color: var(--txt); }
+  .notes .hl { color: var(--accent); }
+  footer { text-align: center; font-size: 11px; color: var(--dim); margin-top: 20px; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>v5b e2 <span class="dot">vs</span> v5c e3 验收对比</h1>
+  <p class="sub">
+    <span class="tag">同 prompt</span><span class="tag">同 seed=42</span><span class="tag">30 steps</span><span class="tag">cfg 7.5</span><span class="tag">lora_scale 0.8</span>
+  </p>
+  <p class="sub">左：v5b e2（512px · dim32 · 甜点 0.754）｜ 右：v5c e3（768px 训练 · dim64 · 0.767）<br>横向滑动或点击放大看细节 —— 重点盯线稿/笔触/头发质感</p>
+</header>
+
+<div class="cmp">
+  <div class="cmp-title"><span class="pn">g1</span> 赛博朋克霓虹 <span class="prompt-txt">1girl, cyberpunk city, neon lights, detailed eyes</span></div>
+  <div class="side v5b"><div class="head"><b>v5b e2</b><span class="tag2">512 · dim32</span></div><img src="acceptance_v5b/g1_cyberpunk.png" onclick="window.open(this.src)"></div>
+  <div class="side v5c"><div class="head"><b>v5c e3</b><span class="tag2">768训 · dim64</span></div><img src="acceptance_v5c/g1_cyberpunk.png" onclick="window.open(this.src)"></div>
+</div>
+
+<div class="cmp">
+  <div class="cmp-title"><span class="pn">g2</span> 白裙花田 <span class="prompt-txt">1girl, white dress, standing in flower field</span></div>
+  <div class="side v5b"><div class="head"><b>v5b e2</b><span class="tag2">512 · dim32</span></div><img src="acceptance_v5b/g2_flower.png" onclick="window.open(this.src)"></div>
+  <div class="side v5c"><div class="head"><b>v5c e3</b><span class="tag2">768训 · dim64</span></div><img src="acceptance_v5c/g2_flower.png" onclick="window.open(this.src)"></div>
+</div>
+
+<div class="cmp">
+  <div class="cmp-title"><span class="pn">g3</span> 教室黄昏 <span class="prompt-txt">1girl, school uniform, classroom, sunset, looking at viewer</span></div>
+  <div class="side v5b"><div class="head"><b>v5b e2</b><span class="tag2">512 · dim32</span></div><img src="acceptance_v5b/g3_classroom.png" onclick="window.open(this.src)"></div>
+  <div class="side v5c"><div class="head"><b>v5c e3</b><span class="tag2">768训 · dim64</span></div><img src="acceptance_v5c/g3_classroom.png" onclick="window.open(this.src)"></div>
+</div>
+
+<div class="cmp">
+  <div class="cmp-title"><span class="pn">g4</span> 雨夜黑白氛围 <span class="prompt-txt">1girl, rainy street at night, umbrella, monochrome atmosphere</span></div>
+  <div class="side v5b"><div class="head"><b>v5b e2</b><span class="tag2">512 · dim32</span></div><img src="acceptance_v5b/g4_rain_gray.png" onclick="window.open(this.src)"></div>
+  <div class="side v5c"><div class="head"><b>v5c e3</b><span class="tag2">768训 · dim64</span></div><img src="acceptance_v5c/g4_rain_gray.png" onclick="window.open(this.src)"></div>
+</div>
+
+<div class="cmp">
+  <div class="cmp-title"><span class="pn">g5</span> 图生图（同源图 · strength 0.6）</div>
+  <div class="side v5b"><div class="head"><b>v5b e2</b><span class="tag2">512 · dim32</span></div><img src="acceptance_v5b/g5_img2img.png" onclick="window.open(this.src)"></div>
+  <div class="side v5c"><div class="head"><b>v5c e3</b><span class="tag2">768训 · dim64</span></div><img src="acceptance_v5c/g5_img2img.png" onclick="window.open(this.src)"></div>
+</div>
+
+<div class="notes">
+  <b>怎么看这一轮</b>：v5c 的训练赌注是 —— 768px + 双倍容量（dim64）能让模型记住<b class="hl">线稿与笔触</b>，而不只是 v5b 已经做到的<b class="hl">配色与眼睛</b>。所以对比时优先看：<br>
+  ① 头发丝、衣褶、轮廓线是否更"米山舞"（干脆利落的线 vs 软糊渐变）<br>
+  ② 面部结构是否更稳（不崩、不歪）<br>
+  ③ 代价检查：768 训练常伴随"过锐/脏边"，看是否有画面发脏、细节碎裂<br>
+  ④ 色彩是否仍贴训练集（若 v5c 全面更灰更脏，说明 768 这轮收益为负，回退 v5b）
+</div>
+
+<footer>
+  验收脚本：acceptance_v5c.py（与 acceptance_v5b.py 同口径，仅换权重）｜ 原图目录：D:\multimodal-engine\outputs\acceptance_v5c\ 与 acceptance_v5b\
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>脸崩归因诊断 · 金标准公平重测 + 场景构图归因</title>
+<style>
+  body { font-family: "Microsoft YaHei", sans-serif; background:#0f1117; color:#e8e8ec; margin:0; padding:24px; }
+  h1 { font-size:22px; border-left:4px solid #f5a623; padding-left:12px; }
+  h2 { font-size:17px; margin:28px 0 8px; color:#f5a623; }
+  .sub { color:#9aa0ae; font-size:13px; margin-bottom:14px; line-height:1.7; }
+  .row { display:flex; gap:14px; flex-wrap:wrap; }
+  .card { background:#1a1d27; border-radius:10px; padding:12px; width:300px; }
+  .card.golden { border:2px solid #e8c46a; }
+  .card.ref { border:2px dashed #666; opacity:0.85; }
+  .card img { width:100%; border-radius:6px; display:block; }
+  .card .tag { font-weight:bold; margin-top:8px; font-size:14px; }
+  .card .meta { font-size:12px; color:#9aa0ae; margin-top:4px; line-height:1.6; }
+  .q { background:#161a26; border-left:3px solid #f5a623; padding:12px 14px; margin:14px 0; font-size:13.5px; line-height:1.8; border-radius:0 8px 8px 0; }
+  .q b { color:#f5a623; }
+  code { background:#262b3a; padding:1px 6px; border-radius:4px; font-size:12px; }
+  table { border-collapse:collapse; width:100%; margin:10px 0; font-size:13px; }
+  th,td { border:1px solid #2c3145; padding:6px 10px; text-align:left; }
+  th { background:#1e2333; }
+</style>
+</head>
+<body>
+<h1>脸崩归因诊断 · 一次拆干净两个疑点</h1>
+<div class="sub">同引擎 / 同 seed 42 / 30 步 / cfg 7.5，全部 outputs/diagnosis_face/ · 2026-09-03 20:20</div>
+
+<h2>组A · 金标准公平重测 —— 回答"anything-v5 底模是不是天花板"</h2>
+<div class="sub">
+  上轮金标准测试<b style="color:#e8c46a">用了错误触发词</b>（"yoneya style" 不是 Chanter LoRA 的触发词，它触发词就是 1girl），这次用干净 prompt 重新测。
+  prompt：<code>1girl, solo, looking at viewer, masterpiece, best quality</code>（无任何风格词，纯靠 LoRA 渗出）
+</div>
+<div class="row">
+  <div class="card golden">
+    <img src="diagnosis_face/A1_golden_s06_portrait.png">
+    <div class="tag">A1 · 金标准 scale 0.6</div>
+    <div class="meta">作者推荐区间下限。脸不崩 + 能认出米山舞 → 底模没到天花板，上轮是测试姿势问题</div>
+  </div>
+  <div class="card golden">
+    <img src="diagnosis_face/A2_golden_s10_portrait.png">
+    <div class="tag">A2 · 金标准 scale 1.0</div>
+    <div class="meta">作者推荐权重。与 A1 对比：风格浓度随 scale 变化多少</div>
+  </div>
+</div>
+<div class="q"><b>判读规则：</b>A1/A2 脸不崩且<b>能一眼认出米山舞</b> → 底模有救，"回炉数据集"路线可行；
+两档脸都崩或完全不像 → anything-v5 天花板坐实，要出真·米山舞必须换 SDXL/Illustrious 系底模重训。</div>
+
+<h2>组B · 场景脸崩归因 —— 回答"是 scale 1.5 太狠，还是场景里脸太小"</h2>
+<div class="sub">
+  SD1.5 的老毛病：复杂场景里人物脸只占几十像素，本来就近乎必崩，LoRA 高强度只是放大器。三个变量各测一头。
+  参照组（右一）是上轮最终对决里脸崩的那张，同 seed 可直接对照。
+</div>
+<div class="row">
+  <div class="card">
+    <img src="diagnosis_face/B1_v5c_s15_upper_body.png">
+    <div class="tag">B1 · scale 1.5 + 上半身构图</div>
+    <div class="meta">prompt 加 <code>upper body, detailed face</code>，负面加 bad/deformed face。脸放大后 1.5 还崩吗？</div>
+  </div>
+  <div class="card">
+    <img src="diagnosis_face/B2_v5c_s12_full_scene.png">
+    <div class="tag">B2 · scale 1.2 + 原全身场景</div>
+    <div class="meta">构图不变，只把 scale 降到 1.2。若脸不崩 → 元凶是 scale；若还崩 → 元凶是构图</div>
+  </div>
+  <div class="card">
+    <img src="diagnosis_face/B3_v5c_s15_face_tags.png">
+    <div class="tag">B3 · scale 1.5 + 全身 + 脸部质量词</div>
+    <div class="meta">构图 scale 都不变，只加 detailed face + 负面 bad face。测 prompt 能救几分</div>
+  </div>
+  <div class="card ref">
+    <img src="final_1p5/v5c_e3_g1_cyberpunk.png">
+    <div class="tag">参照 · 上轮脸崩原图（v5c_e3 · 1.5）</div>
+    <div class="meta">同 seed 42 同场景。上面三张哪张的脸比这张明显好，哪个变量就是解药</div>
+  </div>
+</div>
+<div class="q"><b>判读规则：</b>
+① B1 脸好 → 构图是元凶，作品集出图用<b>上半身/胸像构图</b>即可，scale 1.5 保留；
+② B2 脸好 → scale 是元凶，引擎默认降到 1.2；
+③ B3 脸好 → prompt 就能救，模板追加脸部词即可（最省事）；
+④ 全都崩 → 组合拳（1.2 + 上半身构图）或接受现状。三个变量不互斥，可叠加。</div>
+
+<h2>这轮之后就没有中间实验了，直接做决定</h2>
+<table>
+<tr><th>组A 结果</th><th>组B 结果</th><th>行动</th></tr>
+<tr><td>金标准能认出</td><td>B1/B2/B3 任一救回</td><td>引擎配置按 B 的结论更新 → 转作品集出图（9.13 前时间宝贵）</td></tr>
+<tr><td>金标准能认出</td><td>全崩</td><td>接受"风格 LoRA 能力已验证"，作品集出图用近景构图，先冲 ControlNet + ComfyUI</td></tr>
+<tr><td>金标准也认不出</td><td>任意</td><td>anything-v5 天花板坐实；9.13 前不再折腾 SD1.5，作品集用现有成果，SDXL 回炉排到投递后</td></tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>最终对决 — scale 1.5 + 彩色修正 · v5b vs v5c 四场景</title>
+<style>
+  body { font-family: "Microsoft YaHei", sans-serif; background: #14161a; color: #e8e6e3; margin: 0; padding: 24px; }
+  h1 { font-size: 22px; color: #ffd166; }
+  h2 { font-size: 16px; color: #8ecae6; margin: 26px 0 8px; border-left: 4px solid #8ecae6; padding-left: 10px; }
+  p { line-height: 1.7; color: #c9c7c3; font-size: 14px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0 24px; }
+  .card { background: #1e2127; border-radius: 10px; padding: 10px; text-align: center; }
+  .card img { width: 100%; border-radius: 6px; }
+  .name { font-size: 14px; margin: 8px 0 3px; font-weight: bold; }
+  .sub { font-size: 12px; color: #9aa0a6; }
+  .sub b { color: #8ecae6; }
+  .win { color: #6fcf97; font-weight: bold; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 10px 0 18px; }
+  th, td { border: 1px solid #33363d; padding: 7px 10px; text-align: left; }
+  th { background: #23262d; color: #8ecae6; }
+  td.win { color: #6fcf97; font-weight: bold; }
+  .hint { background: #1d2a22; border-left: 4px solid #6fcf97; padding: 12px 14px; border-radius: 6px; margin: 14px 0; line-height: 1.8; }
+  code { background: #2a2d34; padding: 2px 6px; border-radius: 4px; font-size: 12.5px; color: #ffd166; }
+</style>
+</head>
+<body>
+<h1>最终对决 — 锁定口径 scale 1.5 + 彩色修正，v5b vs v5c 四场景</h1>
+<p>甜点区间已由你肉眼锁定：<b>1.2~1.5 可用，1.5 是上限，1.8 崩</b>。这 8 张是把该口径套进正式内容场景的结果——
+这就是能进作品集的成图口径。每行左右对比，左 v5b_e2（512 老甜点），右 v5c_e3（768 新训）。挑出胜者，写入引擎正式配置。</p>
+
+<h2>场景 1 · 赛博朋克霓虹</h2>
+<div class="pair">
+  <div class="card"><img src="final_1p5/v5b_e2_g1_cyberpunk.png"><div class="name">v5b_e2</div><div class="sub">hue <b>0.581</b> · sat <b>0.730</b> <span class="win">◆ 色彩分更高</span></div></div>
+  <div class="card"><img src="final_1p5/v5c_e3_g1_cyberpunk.png"><div class="name">v5c_e3</div><div class="sub">hue <b>0.537</b> · sat <b>0.700</b></div></div>
+</div>
+
+<h2>场景 2 · 花田白裙</h2>
+<div class="pair">
+  <div class="card"><img src="final_1p5/v5b_e2_g2_flower.png"><div class="name">v5b_e2</div><div class="sub">hue <b>0.545</b> · sat <b>0.774</b></div></div>
+  <div class="card"><img src="final_1p5/v5c_e3_g2_flower.png"><div class="name">v5c_e3</div><div class="sub">hue <b>0.490</b> · sat <b>0.776</b></div></div>
+</div>
+
+<h2>场景 3 · 教室夕阳</h2>
+<div class="pair">
+  <div class="card"><img src="final_1p5/v5b_e2_g3_classroom.png"><div class="name">v5b_e2</div><div class="sub">hue <b>0.353</b> · sat <b>0.666</b></div></div>
+  <div class="card"><img src="final_1p5/v5c_e3_g3_classroom.png"><div class="name">v5c_e3</div><div class="sub">hue <b>0.454</b> · sat <b>0.658</b> <span class="win">◆ 色彩分更高</span></div></div>
+</div>
+
+<h2>场景 4 · 雨夜</h2>
+<div class="pair">
+  <div class="card"><img src="final_1p5/v5b_e2_g4_rain.png"><div class="name">v5b_e2</div><div class="sub">hue <b>0.542</b> · sat <b>0.712</b></div></div>
+  <div class="card"><img src="final_1p5/v5c_e3_g4_rain.png"><div class="name">v5c_e3</div><div class="sub">hue <b>0.552</b> · sat <b>0.690</b> <span class="win">◆ 色彩分更高</span></div></div>
+</div>
+
+<h2>量化总表</h2>
+<table>
+  <tr><th>权重</th><th>均值 hue_sim</th><th>均值 sat</th><th>胜场</th></tr>
+  <tr><td>v5b_e2</td><td>0.505</td><td class="win">0.720</td><td>g1 g2</td></tr>
+  <tr><td>v5c_e3</td><td class="win">0.508</td><td>0.706</td><td>g3 g4</td></tr>
+</table>
+<p>数据结论：<b>两版打平</b>（均值几乎重合，各赢两个场景）。色彩指标分不出胜负——这符合预期，两版的差距本就应在 768 的线稿/笔触上，量化测不到。所以下面的问题只有一个：</p>
+
+<div class="hint">
+  <b>终极裁决（60 秒，决定引擎配置写谁）</b><br>
+  逐场景看左右两张图，只回答一个问题：<b>哪边的人物线条/笔触更像米山舞？</b>（脸的轮廓、头发分组、衣褶的线条处理）<br><br>
+  四场景都数一遍：v5b 赢几场、v5c 赢几场。<br>
+  · <b>v5c 赢 ≥3 场</b> → 768 的赌注兑现，引擎切换到 v5c_e3 + scale 1.5<br>
+  · <b>v5b 赢 ≥3 场</b> → 768 白训了，回 v5b_e2，只把 scale 1.5 和彩色 prompt 写进配置<br>
+  · <b>2:2 拉不开</b> → 按"谁崩得少"选，或干脆 v5b（512 生成快一倍）<br><br>
+  顺带最后一个悬案：<a href="甜点精扫_scale1.5.html">上轮看板</a>参考系里金标准那张（Chanter LoRA），你到底认不认得出是米山舞？
+</div>
+
+<p style="color:#9aa0a6;font-size:13px">口径：seed=42 · 30 steps · cfg 7.5 · lora_scale=1.5（锁定） · 正面含 vibrant colors · 负面含 monochrome, greyscale<br>
+胜者配置将写入 <code>sd_config.yaml</code>：weight_name + scale 1.5 + prompt 模板更新。</p>
+</body>
+</html>

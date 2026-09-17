@@ -1,6 +1,6 @@
 import torch
 from unittest.mock import patch, MagicMock
-from multimodal_engine.style_transfer.transfer import StyleTransfer, gram_matrix
+from multimodal_engine.style_transfer.gatys import StyleTransfer, gram_matrix
 
 SAMPLE_CONFIG = """
 model:
@@ -26,7 +26,7 @@ def test_transfer_smoke(tmp_path):
     config_file = tmp_path / "config.yaml"
     config_file.write_text(SAMPLE_CONFIG, encoding="utf-8")
 
-    with patch("multimodal_engine.style_transfer.transfer.VGGFeatureExtractor") as mock_vgg:
+    with patch("multimodal_engine.style_transfer.gatys.VGGFeatureExtractor") as mock_vgg:
         mock_extractor = MagicMock()
         mock_extractor.parameters.return_value = iter([torch.tensor(0.0)])
         mock_vgg.return_value = mock_extractor
